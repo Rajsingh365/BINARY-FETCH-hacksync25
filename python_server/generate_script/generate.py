@@ -57,6 +57,13 @@ class GenerateScript :
 
     print(res.content, type(res.content))
 
+    try:
+        json_parser = JsonOutputParser()
+        res = json_parser.parse(res.content)
+    except OutputParserException:
+        raise OutputParserException("Context too big. Unable to parse.")
+    return res 
+
 if __name__ == "__main__" : 
   gen = GenerateScript();
   gen.generate_script("Game of War", "A long story about indian wars that shaped india\'s history", "make the last sentence as : do tune in next week ");
