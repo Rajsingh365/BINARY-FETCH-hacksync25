@@ -1,0 +1,6 @@
+misc
+*.ignore*
+.env
+.venv
+*_venv*
+node_modules
