@@ -8,27 +8,33 @@ import { AboutUs } from "./pages/AboutUs";
 // import { Profile } from "./pages/Profile";
 import { Toaster } from "react-hot-toast";
 import { AuthContextProvider } from "./context/AuthContext";
-
+import GenerateAudio from "./pages/GenerateAudio";
+import GenerateContent from "./pages/GenerateContent";
+import {ScriptContextProvider } from "./context/ScriptContext";
+import Dashboard from "./pages/Dashboard";
 
 function App() {
   return (
     <>
-    <AuthContextProvider>
-      <Routes>
-        <Route path="/" element={<HomeLayout />}>
-          <Route index element={<Landing />} />
-          <Route path="/about" element={<AboutUs />} />
-          <Route path="/contact" element={<ContactUs />} />
-          {/* <Route path="/signup" element={<Signup />} />
+      <AuthContextProvider>
+        <ScriptContextProvider>
+          <Routes>
+            <Route path="/" element={<HomeLayout />}>
+              <Route index element={<Dashboard />} />
+              <Route path="/about" element={<AboutUs />} />
+              <Route path="/contact" element={<ContactUs />} />
+              <Route path="/generate-content" element={<GenerateContent />} />
+              <Route path="/generate-audio" element={<GenerateAudio />} />
+              {/* <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/profile" element={<Profile />} /> */}
-        </Route> 
-      </Routes>
+            </Route>
+          </Routes>
 
-      <Toaster />
-    </AuthContextProvider>
+          <Toaster />
+        </ScriptContextProvider>
+      </AuthContextProvider>
     </>
   );
 }
-
 export default App;
