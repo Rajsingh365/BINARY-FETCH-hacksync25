@@ -1,5 +1,9 @@
 listener : 
-
+name,
+email,
+password,
+preferences : [],
+liked : [],
 
 podcaster(user) : 
 name

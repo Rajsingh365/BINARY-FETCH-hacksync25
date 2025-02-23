@@ -7,8 +7,16 @@ import fileUpload from "express-fileupload";
 
 import authRoutes from "./routes/auth.route.js";
 import podcastRouter from "./routes/podcast.routes.js";
+import appRouter from "./routes/appRoutes.js";
 import contentGenerationRoutes from "./routes/contentgeneration.route.js";
 import { protectRoute } from "./middleware/authentication.js";
+import { v2 as cloudinary } from "cloudinary";
+
+cloudinary.config({
+  cloud_name: process.env.CLOUD_NAME,
+  api_key: process.env.CLOUD_API_KEY,
+  api_secret: process.env.CLOUD_API_SECRET,
+});
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -22,13 +30,13 @@ app.use(cors());
 app.use(
   fileUpload({
     useTempFiles: true,
-    tempFileDir: "/tmp/",
   })
 );
 
 app.use("/api/auth", authRoutes);
 app.use("/api/content-generation", contentGenerationRoutes);
 app.use("/api/podcast", protectRoute, podcastRouter);
+app.use("/api/app", appRouter);
 
 app.get("/", (req, res) => {
   res.json({ message: "Hello world" });
