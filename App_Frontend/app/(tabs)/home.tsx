@@ -14,10 +14,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { Podcast, useGlobal} from "@/context/GlobalProvider";
 
 export default function Home() {
-  const { AllPodcast : Podcasts } = useGlobal();
+  const { AllPodcast : Podcasts} = useGlobal();
   const groupedPodcasts = makeGroups(Podcasts);
   const [openPlayer, setOpenPlayer] = useState(false);
   const [selectedPodcast, setSelectedPodcast] = useState<Podcast | null>(null);
+  console.log(Podcasts);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -176,15 +177,15 @@ function makeGroups(data: Podcast[]): Podcast[][] {
   let groupedData: Podcast[][] = [];
   let group: Podcast[] = [];
 
-  for (let i = 0; i < data.length; i++) {
+  for (let i = 0; i < data?.length; i++) {
     group.push(data[i]);
-    if (group.length === 3) {
+    if (group?.length === 3) {
       groupedData.push(group);
       group = [];
     }
   }
 
-  if (group.length > 0) {
+  if (group?.length > 0) {
     groupedData.push(group);
   }
 

@@ -11,15 +11,17 @@ import {
 } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from "expo-router";
+import { useGlobal } from "@/context/GlobalProvider";
 
 const index = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [preferences, setPreferences] = useState('');
+  const {authuser, setAuthuser} = useGlobal();
 
 
-  const handleSignUp = () => {
+  const handleSignUp = async() => {
     if (!name || !email || !password || !preferences) {
       Alert.alert('Error', 'Please fill in all fields.');
       return;
@@ -33,7 +35,7 @@ const index = () => {
     }
 
     // Split preferences into an array
-    const preferencesArray = preferences.split(',').map((pref) => pref.trim());
+    const preferencesArray = (preferences || '').split(',').map((pref) => pref.trim());
 
     // Log the form data (you can send it to a server instead)
     console.log({
@@ -43,12 +45,22 @@ const index = () => {
       preferences: preferencesArray,
     });
 
-    Alert.alert('Success', 'Sign up successful!');
-    // Reset the form
-    setName('');
-    setEmail('');
-    setPassword('');
-    setPreferences('');
+    const res = await fetch(`${process.env.EXPO_PUBLIC_BACKEND_URI}/api/listener/signup`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        name,
+        email,
+        password,
+        preferences: preferencesArray,
+      }),
+    });
+    const data = await res.json();
+    console.log(data);
+    setAuthuser(data);
+    router.push('/home');
   };
 
   return (
@@ -103,7 +115,7 @@ const index = () => {
           {/* Login Link */}
           <View style={styles.loginLinkContainer}>
             <Text style={styles.loginText}>Already have an account?</Text>
-            <TouchableOpacity onPress={() => router.push('/login')}>
+            <TouchableOpacity onPress={() => router.push('/home')}>
               <Text style={styles.loginButton}>Login</Text>
             </TouchableOpacity>
           </View>

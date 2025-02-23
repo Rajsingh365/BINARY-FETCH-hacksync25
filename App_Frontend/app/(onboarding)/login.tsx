@@ -35,6 +35,7 @@ const Login = () => {
       email,
       password,
     });
+    router.push('/home');
 
     Alert.alert('Success', 'Login successful!');
     // Reset the form

@@ -27,6 +27,8 @@ export interface GetPodcastsResponse {
   podcasts: Podcast[];
 }
 
+
+
 interface GlobalContextType {
   liked: Podcast[];
   setLiked: React.Dispatch<React.SetStateAction<Podcast[]>>;
@@ -35,6 +37,9 @@ interface GlobalContextType {
   setDownloaded: React.Dispatch<React.SetStateAction<Podcast[]>>;
 
   AllPodcast: Podcast[];
+
+  authuser: string;
+  setAuthuser: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const GlobalContext = createContext<GlobalContextType | null>(null);
@@ -43,13 +48,21 @@ export const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
   const [liked, setLiked] = useState<Podcast[]>([]);
   const [downloaded, setDownloaded] = useState<Podcast[]>([]);
   const [AllPodcast, setAllPodcast] = useState<Podcast[]>([]);
+  const [authuser, setAuthuser] = useState<string>("");
 
   useEffect(() => {
     const fetchPodcasts = async () => {
       try {
-        const response = await fetch(`${process.env.EXPO_PUBLIC_BACKEND_URI}/api/app/podcasts`);
+        const response = await fetch(`${process.env.EXPO_PUBLIC_BACKEND_URI}/api/app/podcasts`,{
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${authuser.token}`
+          }
+        });
         const data: GetPodcastsResponse = await response.json();
         setAllPodcast(data.podcasts);
+        console.log("All Podcasts", data.podcasts);
       } catch (error : any) {
         console.log("Backend URL:", process.env.EXPO_PUBLIC_BACKEND_URI);
         console.log("Error in fetching all the podcast in global context",error);
@@ -65,7 +78,9 @@ export const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
         setLiked,
         downloaded,
         setDownloaded,
-        AllPodcast
+        AllPodcast,
+        authuser,
+        setAuthuser
       }}
     >
       {children}
