@@ -112,8 +112,8 @@ function PodcastCard({
           style={styles.thumbnailImg}
         />
         <View style={styles.card_textcontainer}>
-          <Text style={styles.cardtext}>{episode.title}</Text>
-          <Text style={styles.cardtext}>{episode.contentCreator}</Text>
+          <Text numberOfLines={1} style={styles.cardtext}>{episode.title}</Text>
+          <Text numberOfLines={1} style={styles.cardtext}>{episode.contentCreator}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -126,7 +126,7 @@ function CreatorCard({ creator }: { creator: Podcast }) {
       <View style={styles.creator_card}>
         <Image source={{ uri: creator.thumbnail }} style={styles.creatorImg} />
         <View style={styles.creator_overlay}>
-          <Text style={styles.creator_text}>{creator.contentCreator}</Text>
+          <Text numberOfLines={1} style={styles.creator_text}>{creator.contentCreator}</Text>
         </View>
       </View>
     </TouchableOpacity>

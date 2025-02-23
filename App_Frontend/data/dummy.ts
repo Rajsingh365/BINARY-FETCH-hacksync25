@@ -63,7 +63,7 @@ export const Podcasts: Podcast[] = [
   },
   {
     thumbnail: "https://ideogram.ai/assets/image/lossless/response/5l5V8brHRcOE2pq9TyOrgw",
-    title: "Car",
+    title: "The Infinite Rabbit Hole: Exploring the Curious, the Absurd, and the Profound in a World That Never Stops Surprising Us",
     contentCreator: "Neil Armstrong",
     audio: require("@/dummyaudio/audiotest.mp3"),
   },
