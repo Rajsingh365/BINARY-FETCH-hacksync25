@@ -4,3 +4,4 @@ misc
 .venv
 *_venv*
 node_modules
+__pycache__
