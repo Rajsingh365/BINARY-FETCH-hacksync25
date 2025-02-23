@@ -2,7 +2,8 @@ import * as FileSystem from "expo-file-system";
 import * as MediaLibrary from "expo-media-library";
 import { Asset } from "expo-asset";
 import { Alert, Platform } from "react-native";
-import { Podcast } from "@/data/dummy";
+// import { Podcast } from "@/data/dummy";
+import { Podcast } from "@/context/GlobalProvider";
 
 export const useDownload = () => {
   const downloadPodcast = async (podcast: Podcast) => {
@@ -16,7 +17,7 @@ export const useDownload = () => {
         return;
       }
 
-      let uri = podcast.audio;
+      let uri : string | null = podcast.audioUrl;
 
       // Handle local files
       if (typeof uri !== "string") {

@@ -1,4 +1,5 @@
-import { Podcast } from "@/data/dummy";
+// import { Podcast } from "@/data/dummy";
+import { Podcast } from "@/context/GlobalProvider";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
 
@@ -28,7 +29,7 @@ export default function PodcastCard({
             {episode.title}
           </Text>
           <Text numberOfLines={1} style={styles.cardtext}>
-            {episode.contentCreator}
+            {episode.creator.name}
           </Text>
         </View>
       </View>

@@ -8,7 +8,8 @@ import {
 } from "react-native";
 import React, { useState } from "react";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Podcast } from "@/data/dummy";
+// import { Podcast } from "@/data/dummy";
+// import { Podcast } from "@/context/GlobalProvider";
 import { useGlobal } from "@/context/GlobalProvider";
 import PodcastCard from "@/components/DownAndOffCard";
 

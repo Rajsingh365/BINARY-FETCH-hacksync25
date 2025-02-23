@@ -7,7 +7,8 @@ import React, {
 } from "react";
 import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from "react-native";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
-import { Podcast, Podcasts } from "@/data/dummy";
+// import { Podcast, Podcasts } from "@/data/dummy";
+import { Podcast} from "@/context/GlobalProvider";
 import { useAudio } from "@/context/AudioContext";
 import { Ionicons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
@@ -26,7 +27,7 @@ export const BottomDrawer = ({
   const snapPoints = useMemo(() => ["18%", "99%"], []);
   const [isExpanded, setIsExpanded] = useState(false);
   const [currentPodcast, setCurrentPodcast] = useState<Podcast | null>(playpodcast);
-  const { liked,setLiked, downloaded,setDownloaded } = useGlobal();
+  const { liked,setLiked, downloaded,setDownloaded,AllPodcast: Podcasts } = useGlobal();
   const { downloadPodcast } = useDownload()
 
   const isLiked = currentPodcast
@@ -42,8 +43,8 @@ export const BottomDrawer = ({
   }, [playpodcast]);
 
   useEffect(() => {
-    if (currentPodcast?.audio) {
-      playAudio(currentPodcast.audio);
+    if (currentPodcast?.audioUrl) {
+      playAudio(currentPodcast.audioUrl);
     }
     return () => {
       stopAudio();
@@ -140,7 +141,7 @@ export const BottomDrawer = ({
                 style={[styles.creator, isExpanded && styles.creatorExpanded]}
                 numberOfLines={1}
               >
-                {currentPodcast?.contentCreator}
+                {currentPodcast?.creator.name}
               </Text>
             </View>
             {isExpanded && (

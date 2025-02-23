@@ -10,9 +10,11 @@ import {
   ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Podcast, Podcasts } from "@/data/dummy";
+// import { Podcast, Podcasts } from "@/data/dummy";
+import { Podcast, useGlobal} from "@/context/GlobalProvider";
 
 export default function Home() {
+  const { AllPodcast : Podcasts } = useGlobal();
   const groupedPodcasts = makeGroups(Podcasts);
   const [openPlayer, setOpenPlayer] = useState(false);
   const [selectedPodcast, setSelectedPodcast] = useState<Podcast | null>(null);
@@ -35,7 +37,7 @@ export default function Home() {
               renderItem={({ item: group }) => (
                 <FlatList
                   data={group}
-                  keyExtractor={(item) => item.title}
+                  keyExtractor={(item) => item._id}
                   renderItem={({ item }) => (
                     <PodcastCard
                       episode={item}
@@ -56,12 +58,12 @@ export default function Home() {
           </View>
           <FlatList
             data={Podcasts}
-            keyExtractor={(item) => item.contentCreator}
+            keyExtractor={(item) => item._id}
             horizontal
             pagingEnabled
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ paddingHorizontal: 10 }}
-            renderItem={({ item }) => <CreatorCard creator={item} />}
+            renderItem={({ item }) => <CreatorCard Creator={item} />}
           />
         </View>
 
@@ -72,7 +74,7 @@ export default function Home() {
           </View>
           <FlatList
             data={Podcasts}
-            keyExtractor={(item) => item.contentCreator}
+            keyExtractor={(item) => item._id}
             horizontal
             pagingEnabled
             showsHorizontalScrollIndicator={false}
@@ -113,20 +115,20 @@ function PodcastCard({
         />
         <View style={styles.card_textcontainer}>
           <Text numberOfLines={1} style={styles.cardtext}>{episode.title}</Text>
-          <Text numberOfLines={1} style={styles.cardtext}>{episode.contentCreator}</Text>
+          <Text numberOfLines={1} style={styles.cardtext}>{episode.creator.name}</Text>
         </View>
       </View>
     </TouchableOpacity>
   );
 }
 
-function CreatorCard({ creator }: { creator: Podcast }) {
+function CreatorCard({ Creator }: { Creator: Podcast }) {
   return (
     <TouchableOpacity>
       <View style={styles.creator_card}>
-        <Image source={{ uri: creator.thumbnail }} style={styles.creatorImg} />
+        <Image source={{ uri: Creator.thumbnail }} style={styles.creatorImg} />
         <View style={styles.creator_overlay}>
-          <Text numberOfLines={1} style={styles.creator_text}>{creator.contentCreator}</Text>
+          <Text numberOfLines={1} style={styles.creator_text}>{Creator.creator.name}</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -162,7 +164,7 @@ function CreatorSpecialCard({
             numberOfLines={1}
             ellipsizeMode="tail"
           >
-            {podcast.contentCreator}
+            {podcast.creator.name}
           </Text>
         </View>
       </View>
