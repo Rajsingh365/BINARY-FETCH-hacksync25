@@ -1,4 +1,7 @@
 import { useState } from "react";
+import {Link} from 'react-router-dom'
+import { useScriptContext } from "../context/ScriptContext";
+import { Edit, ContentCopy, AudioFile } from "@mui/icons-material"
 
 export default function GenerateContent() {
   const [formData, setFormData] = useState({
@@ -12,6 +15,8 @@ export default function GenerateContent() {
   const [editableTags, setEditableTags] = useState(""); // Store editable tags
   const [copiedScript, setCopiedScript] = useState(false); // Track if script is copied
   const [copiedTags, setCopiedTags] = useState(false); // Track if tags are copied
+
+  const {setTextScript, setTags } = useScriptContext()
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -37,7 +42,7 @@ export default function GenerateContent() {
 
     // Send FormData to the backend
     try {
-      const response = await fetch("http://localhost:5000/generate/script", {
+      const response = await fetch(`${import.meta.env.VITE_FLASK_URL}/generate/script`, {
         method: "POST",
         body: formDataToSend,
       });
@@ -51,10 +56,15 @@ export default function GenerateContent() {
 
       // Set the API response
       setApiResponse(result);
+      let scriptsRes=JSON.stringify(result.content, null, 2)
+      let tags = result.tags.join(", ")
+
+      setTags(tags)
+      setTextScript(scriptsRes)
 
       // Set editable fields with the initial response
-      setEditableScript(JSON.stringify(result.content, null, 2)); // Pretty-print JSON
-      setEditableTags(result.tags.join(", ")); // Convert tags array to a string
+      setEditableScript(scriptsRes); // Pretty-print JSON
+      setEditableTags(); // Convert tags array to a string
     } catch (error) {
       console.error("Error submitting form:", error);
     }
@@ -150,6 +160,13 @@ export default function GenerateContent() {
               {copiedTags ? "Copied!" : "Copy Tags"}
             </button>
           </div>
+
+          <Link
+            to="/generate-audio"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-all flex items-center gap-1"
+          >
+            <AudioFile /> Generate Audio
+          </Link>
         </div>
       )}
     </div>

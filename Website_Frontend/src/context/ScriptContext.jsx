@@ -9,8 +9,9 @@ export const useScriptContext = () => {
 
 export const ScriptContextProvider = ({children}) => {
   const [textScript, setTextScript] = useState("");
+  const [tags, setTags] = useState("")
   
-  return <ScriptContext.Provider value={{textScript, setTextScript}}>
+  return <ScriptContext.Provider value={{textScript, setTextScript, tags, setTags}}>
     {children}
     </ScriptContext.Provider>;
 }
