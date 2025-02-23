@@ -1,6 +1,7 @@
 import { Link, useLocation } from "react-router-dom";
 import { Home, AddCircleOutline, Headphones, VideoChat } from "@mui/icons-material";
 import VideoLibraryIcon from '@mui/icons-material/VideoLibrary';
+import ExploreIcon from '@mui/icons-material/Explore';
 import PeopleIcon from '@mui/icons-material/People';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import { motion } from "framer-motion";
@@ -58,6 +59,17 @@ export default function Sidebar() {
           >
             <Headphones className={`${location.pathname === "/generate-audio" ? "text-orange-500" : ""}`} />
             <span>Generate Audio</span>
+          </Link>
+        </li>
+        <li>
+          <Link
+            to="/podcaster-hub"
+            className={`flex items-center gap-3 p-3 rounded transition-all duration-300 ${
+              location.pathname === "/podcaster-hub" ? "bg-gray-200 text-orange-500" : "hover:bg-gray-100"
+            }`}
+          >
+            <ExploreIcon className={`${location.pathname === "/podcaster-hub" ? "text-orange-500" : ""}`} />
+            <span>Podcaster Hub</span>
           </Link>
         </li>
         <li>

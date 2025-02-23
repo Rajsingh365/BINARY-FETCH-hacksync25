@@ -2,6 +2,8 @@ import jwt from "jsonwebtoken";
 
 export const protectRoute = async (req, res, next) => {
   const authHeader = req.headers.authorization;
+  console.log('Auth', req.headers.authorization);
+
   if (!authHeader) {
     return res.status(401).json({ error: "Token not provided" });
   }

@@ -96,3 +96,10 @@ export const logoutUser = (req, res) => {
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
+
+
+export const getAllUsers =async(req, res) =>{
+  const podcasters = await User.find().select("-password")
+
+  res.json({podcasters})
+}

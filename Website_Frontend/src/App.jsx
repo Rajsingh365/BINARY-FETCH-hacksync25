@@ -15,6 +15,7 @@ import Dashboard from "./pages/Dashboard";
 import Webinar from "./pages/Webinar";
 import Tutorials from "./pages/Tutuorials";
 import Community from "./pages/Community";
+import PodcasterHub from "./pages/PodcasterHub";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
               <Route path="/webinars" element={<Webinar />} />
               <Route path="/tutorials" element={<Tutorials />} />
               <Route path="/community" element={<Community />} />
+              <Route path="/podcaster-hub" element={<PodcasterHub />} />
 
               {/* <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
