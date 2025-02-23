@@ -5,10 +5,11 @@ import generateTokenAndSetCookie from "../utils/generateToken.util.js";
 export const signUp = async (req, res) => {
   console.log("sighnup controller");
   try {
-    const { email, password, confirmPassword, preferences } = req.body;
+    const { name, email, password, confirmPassword, genres } = req.body;
+    console.log({ name, email, password, confirmPassword, genres });
 
     // Validate required fields
-    if (!email || !password || !confirmPassword || !preferences?.length) {
+    if (!name || !email || !password || !confirmPassword || !genres?.length) {
       return res.status(400).json({ error: "Please fill in all fields" });
     }
 
@@ -27,9 +28,10 @@ export const signUp = async (req, res) => {
 
     // Create new user
     const newUser = await User.create({
+      name,
       email,
       password: hashPassword,
-      preferences,
+      genres,
     });
 
     if (newUser) {
@@ -37,8 +39,9 @@ export const signUp = async (req, res) => {
       const token = generateTokenAndSetCookie(newUser._id, res);
       res.status(201).json({
         _id: newUser._id,
+        name: newUser.name,
         email: newUser.email,
-        preferences: newUser.preferences,
+        genres: newUser.genres,
         token,
       });
     } else {
@@ -76,7 +79,7 @@ export const loginUser = async (req, res) => {
     res.status(200).json({
       _id: user._id,
       email: user.email,
-      preferences: user.preferences,
+      genres: user.genres,
       token,
     });
   } catch (error) {
@@ -85,13 +88,11 @@ export const loginUser = async (req, res) => {
   }
 };
 
- 
 export const logoutUser = (req, res) => {
   try {
-
-    res.status(200).json({message: "Logged out successfully"});
+    res.status(200).json({ message: "Logged out successfully" });
   } catch (error) {
     console.log("Error in logout controller", error.message);
     res.status(500).json({ error: "Internal Server Error" });
   }
-}
+};
