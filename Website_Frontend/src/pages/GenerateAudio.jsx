@@ -2,26 +2,43 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useScriptContext } from "../context/ScriptContext";
 import { Edit, ContentCopy, UploadFile } from "@mui/icons-material";
-import axios from 'axios';
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import AudioLoader from "../components/AudioLoader";
 import toast from "react-hot-toast";
-
+import Piyush from "../assets/piyush.wav";
 
 export default function GenerateAudio() {
-  const { textScript, setTextScript } = useScriptContext();
+  const { textScript, setTextScript, setAudioFile, audioFile } =
+    useScriptContext();
   const [selectedLanguage, setSelectedLanguage] = useState("");
   const [isEditing, setIsEditing] = useState(true);
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
   const [editableText, setEditableText] = useState(textScript);
   const [audioFiles, setAudioFiles] = useState([]);
-  const [outputUrl, setoutputUrl] = useState(null);
-  const [loading, setLoading] = useState(false)
+  const [outputUrl, setOutputUrl] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
   useEffect(() => {
+    setAudioFile(Piyush);
     setEditableText(textScript);
   }, [textScript]);
+  async function convertAudioToFile() {
+    try {
+      const response = await fetch(Piyush); // Fetch the audio file as a blob
+      const blob = await response.blob();
 
-  // Handle file upload & preserve order
+      const audio = new File([blob], "piyush.wav", { type: "audio/wav" });
+
+      console.log("Converted File:", audio); // Debugging log
+      setAudioFile(audio);
+    } catch (error) {
+      console.error("Error converting audio file:", error);
+    }
+  }
+
   const handleFileUpload = (event) => {
     const files = Array.from(event.target.files);
     const wavFiles = files.filter((file) => file.type === "audio/wav");
@@ -31,31 +48,28 @@ export default function GenerateAudio() {
       return;
     }
 
-    setAudioFiles((prevFiles) => [...prevFiles, ...wavFiles]); // Maintain order
+    setAudioFiles((prevFiles) => [...prevFiles, ...wavFiles]);
     setError("");
   };
 
-  // Remove an audio file & keep order intact
   const handleRemoveFile = (index) => {
     setAudioFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
 
-  // Handle form submission & display FormData
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if(loading) {
-      toast('Please wait for the current audio to be generated.')
-      return ;
+    if (loading) {
+      toast("Please wait for the current audio to be generated.");
+      return;
     }
-    setoutputUrl(null)
-    setError("")
+    setOutputUrl(null);
+    setError("");
 
     if (!editableText.trim() || !selectedLanguage || audioFiles.length === 0) {
       setError("Please fill in all fields and upload at least one audio file.");
       return;
     }
 
-    // Prepare FormData
     const formData = new FormData();
     formData.append("script", editableText);
     formData.append("language", selectedLanguage);
@@ -63,36 +77,25 @@ export default function GenerateAudio() {
       formData.append(`audioFile_${index + 1}`, file);
     });
 
-    // Display FormData in console (instead of POST request)
-    console.log("Form Data Entries:");
-    for (const pair of formData.entries()) {
-      console.log(pair[0], pair[1]);
-    }
-
     try {
-      setLoading(true)
-      const {data} = await axios({
+      setLoading(true);
+      const { data } = await axios({
         method: "post",
-        url: `${
-          import.meta.env.VITE_BACKEND_URL
-        }/api/content-generation/audio-generation`,
+        url: `${import.meta.env.VITE_BACKEND_URL}/api/content-generation/audio-generation`,
         data: formData,
         headers: {
-          "Content-Type": `form-data;`,
+          "Content-Type": `multipart/form-data`,
         },
       });
 
-      console.log('Data', data);
-
-      setoutputUrl(`${import.meta.env.VITE_BACKEND_URL}${data.audioUrl}`);
-
-
+      setOutputUrl(`${import.meta.env.VITE_BACKEND_URL}${data.audioUrl}`);
+      setAudioFile(`${import.meta.env.VITE_BACKEND_URL}${data.audioUrl}`)
+      convertAudioToFile();
       setError("");
     } catch (err) {
       setError("Failed to generate audio. Please try again.");
-    }
-    finally{
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -105,7 +108,6 @@ export default function GenerateAudio() {
   return (
     <div className="flex flex-col gap-6 p-6 max-w-2xl mx-auto bg-white text-black rounded-lg shadow-lg">
       <motion.form onSubmit={handleSubmit} className="space-y-6">
-        {/* Script Field */}
         <div>
           <label className="block text-black mb-2 font-medium">Script</label>
           {isEditing ? (
@@ -123,7 +125,6 @@ export default function GenerateAudio() {
           )}
         </div>
 
-        {/* Language Selection */}
         <div>
           <label className="block text-black mb-2 font-medium">Language</label>
           <select
@@ -137,7 +138,6 @@ export default function GenerateAudio() {
           </select>
         </div>
 
-        {/* Audio File Upload */}
         <div>
           <label className="block text-black mb-2 font-medium">
             Upload .wav Files
@@ -172,7 +172,6 @@ export default function GenerateAudio() {
 
         {error && <p className="text-red-500 text-sm">{error}</p>}
 
-        {/* Action Buttons */}
         <div className="flex justify-between items-center">
           <div className="flex gap-2">
             {isEditing ? (
@@ -218,6 +217,13 @@ export default function GenerateAudio() {
             <source src={outputUrl} type="audio/mp3" />
             Your browser does not support the audio element.
           </audio>
+          {/* Upload Podcast Button */}
+          <button
+            className="mt-4 w-full bg-yellow-500 hover:bg-yellow-600 text-white font-semibold py-2 rounded-lg transition"
+            onClick={() => navigate("/upload-podcast")}
+          >
+            Upload Podcast
+          </button>
         </div>
       )}
     </div>

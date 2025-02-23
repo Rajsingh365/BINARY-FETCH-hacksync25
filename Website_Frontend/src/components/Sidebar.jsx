@@ -1,6 +1,12 @@
 import { Link, useLocation } from "react-router-dom";
-import { Home, AddCircleOutline, Headphones } from "@mui/icons-material";
+import { Home, AddCircleOutline, Headphones, VideoChat } from "@mui/icons-material";
+import VideoLibraryIcon from '@mui/icons-material/VideoLibrary';
+import PeopleIcon from '@mui/icons-material/People';
+import CampaignIcon from '@mui/icons-material/Campaign';
 import { motion } from "framer-motion";
+import { FaMicrophoneAlt } from "react-icons/fa";
+
+
 
 const sidebarVariants = {
   hidden: { x: -250, opacity: 0 },
@@ -27,7 +33,7 @@ export default function Sidebar() {
             }`}
           >
             <Home className={`${location.pathname === "/" ? "text-orange-500" : ""}`} />
-            <span>Home</span>
+            <span>Dashboard</span>
           </Link>
         </li>
 
@@ -54,6 +60,51 @@ export default function Sidebar() {
           >
             <Headphones className={`${location.pathname === "/generate-audio" ? "text-orange-500" : ""}`} />
             <span>Generate Audio</span>
+          </Link>
+        </li>
+        <li>
+          <Link
+            to="/upload-podcast"
+            className={`flex items-center gap-3 p-3 rounded transition-all duration-300 ${
+              location.pathname === "/upload-podcast" ? "bg-gray-200 text-orange-500" : "hover:bg-gray-100"
+            }`}
+          >
+
+            <FaMicrophoneAlt className={`${location.pathname === "/upload-podcast" ? "text-orange-500" : ""}`} />
+            <span>Upload Podcast</span>
+          </Link>
+        </li>
+        <li>
+          <Link
+            to="/webinars"
+            className={`flex items-center gap-3 p-3 rounded transition-all duration-300 ${
+              location.pathname === "/webinars" ? "bg-gray-200 text-orange-500" : "hover:bg-gray-100"
+            }`}
+          >
+            <CampaignIcon className={`${location.pathname === "/webinars" ? "text-orange-500" : ""}`} />
+            <span>Webinars</span>
+          </Link>
+        </li>
+        <li>
+          <Link
+            to="/tutorials"
+            className={`flex items-center gap-3 p-3 rounded transition-all duration-300 ${
+              location.pathname === "/tutorials" ? "bg-gray-200 text-orange-500" : "hover:bg-gray-100"
+            }`}
+          >
+            <VideoLibraryIcon  className={`${location.pathname === "/tutorials" ? "text-orange-500" : ""}`} />
+            <span>Video Tutorials</span>
+          </Link>
+        </li>
+        <li>
+          <Link
+            to="/community"
+            className={`flex items-center gap-3 p-3 rounded transition-all duration-300 ${
+              location.pathname === "/community" ? "bg-gray-200 text-orange-500" : "hover:bg-gray-100"
+            }`}
+          >
+            <PeopleIcon className={`${location.pathname === "/community" ? "text-orange-500" : ""}`} />
+            <span>Community</span>
           </Link>
         </li>
       </ul>
