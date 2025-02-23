@@ -3,6 +3,7 @@ import { Home, Contacts, Login } from "@mui/icons-material";
 import { Menu } from "@mui/icons-material";
 import { useState } from "react";
 import { motion } from "framer-motion";
+import logo from "./../assets/images/logo.png"
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
@@ -31,8 +32,8 @@ export function Navbar() {
       <div className="max-w-6xl mx-auto px-6 py-3 flex justify-between items-center">
         {/* Logo and Name - Left aligned */}
         <div className="flex items-center space-x-3 flex-shrink-0">
-          <img src="/logo.png" alt="Logo" className="h-10 w-10" />
-          <span className="text-xl font-bold">Brand Name</span>
+          <img src={logo} alt="Logo" className="h-10 w-10 rounded-full" />
+          <span className="text-xl font-bold">Vocalect</span>
         </div>
 
         {/* Desktop Menu - Right aligned */}

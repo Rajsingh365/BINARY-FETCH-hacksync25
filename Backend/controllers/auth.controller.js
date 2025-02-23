@@ -98,8 +98,32 @@ export const logoutUser = (req, res) => {
 };
 
 
-export const getAllUsers =async(req, res) =>{
-  const podcasters = await User.find().select("-password")
+export const getAllUsers = async (req, res) => {
+  try {
+    const { user_id } = req.params;
 
-  res.json({podcasters})
-}
+    const podcasters = await User.find({ _id: { $ne: user_id } }).select("-password");
+
+    res.json({ podcasters });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+export const getParticularUser = async (req, res) => {
+  try {
+    const { user_id } = req.params;
+    console.log('user', user_id);
+
+    const podcaster = await User.findById(user_id).select("-password");
+
+    if (!podcaster) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(podcaster);
+  } catch (error) {
+    res.status(500).json({ message: "Error in getParticularUser controller", error });
+  }
+};
+
