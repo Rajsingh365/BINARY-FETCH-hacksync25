@@ -1,4 +1,4 @@
-import Podcast from "../models/podcast.model";
+import Podcast from "../models/podcast.model.js";
 import { StatusCodes } from "http-status-codes";
 
 export const getAllPodcasts = async (req, res) => {

@@ -18,28 +18,33 @@ class GenerateScript :
   def generate_script(self, title, summary, instructions) : 
     prompt_script = PromptTemplate.from_template(
     """
-    ### SOLO PODCAST SCRIPT CREATION
+    ### PODCAST SCRIPT CREATION
     Title of the episode : {title}
     ### BRIEF
     The podcast must revolve around : {summary}
     ### INSTRUCTIONS
     Instructions you must follow : {special_instructions}
     ### IMPORTANT GUIDELINES
-    You are tasked with creating a solo podcast script based on the following instructions. 
+    You are tasked with creating a podcast script based on the following instructions. 
     Use the provided summary to craft a script that can be read aloud for a podcast episode. 
     Make sure to create a compelling narrative with engaging storytelling and clear transitions.
     Keep the tone conversational and approachable. 
     Ensure the script includes real-world examples or scenarios to make it relatable and insightful.
     Format the script in a way that would be easy for a speaker to follow during the podcast.
+    Make a proper long form podcast with multiple different sub conversations.
 
     ### OUTPUT FORMAT (PODCAST SCRIPT):
-    The output should be valid json having two fields : content - that will have the solo script to be fed 
-    to a text to speech model and tags - an array of tags that will be used later for the recommendation 
-    algorithm internally.
+    The output should be valid json having two fields : content - an array that will contain objects that
+    will have 2 fields, the speaker and the content they say, and tags - an array of tags that will be used later 
+    for the recommendation algorithm internally.
 
     ### FINAL OUTPUT (VALID JSON FORMATTED PLAIN TEXT AND NOT JSON):
     {{
-      "content": "content of the generated script",
+      "content": [
+        {{ speaker : speaker1(this exact name), text : dialogue by speaker 1 }},
+        {{ speaker : speaker2(this exact name), text : dialogue by speaker 2 }},
+        and so on...
+      ],
       "tags": "appropriate tags"
     }}
   """
