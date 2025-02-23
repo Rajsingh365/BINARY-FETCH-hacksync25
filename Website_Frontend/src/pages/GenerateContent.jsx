@@ -64,7 +64,7 @@ export default function GenerateContent() {
 
       // Set editable fields with the initial response
       setEditableScript(scriptsRes); // Pretty-print JSON
-      setEditableTags(); // Convert tags array to a string
+      setEditableTags(tags); // Convert tags array to a string
     } catch (error) {
       console.error("Error submitting form:", error);
     }

@@ -41,8 +41,8 @@ class GenerateScript :
     ### FINAL OUTPUT (VALID JSON FORMATTED PLAIN TEXT AND NOT JSON):
     {{
       "content": [
-        {{ speaker : speaker1(this exact name), text : dialogue by speaker 1 }},
-        {{ speaker : speaker2(this exact name), text : dialogue by speaker 2 }},
+        {{ speaker : Speaker1(this exact name), text : dialogue by speaker 1 }},
+        {{ speaker : Speaker2(this exact name), text : dialogue by speaker 2 }},
         and so on...
       ],
       "tags": "appropriate tags"
