@@ -2,6 +2,8 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useScriptContext } from "../context/ScriptContext";
 import { Edit, ContentCopy, UploadFile } from "@mui/icons-material";
+import axios from 'axios';
+
 
 export default function GenerateAudio() {
   const { textScript, setTextScript } = useScriptContext();
@@ -11,7 +13,8 @@ export default function GenerateAudio() {
   const [copied, setCopied] = useState(false);
   const [editableText, setEditableText] = useState(textScript);
   const [audioFiles, setAudioFiles] = useState([]); // Maintain order of uploaded files
-
+  const [outputUrl, setoutputUrl] = useState(null);
+  const [loading, setLoading] = useState(false)
   useEffect(() => {
     setEditableText(textScript);
   }, [textScript]);
@@ -38,6 +41,8 @@ export default function GenerateAudio() {
   // Handle form submission & display FormData
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setoutputUrl(null)
+    setError("")
 
     if (!editableText.trim() || !selectedLanguage || audioFiles.length === 0) {
       setError("Please fill in all fields and upload at least one audio file.");
@@ -59,22 +64,29 @@ export default function GenerateAudio() {
     }
 
     try {
-      const response = await fetch(
-        `${
+      setLoading(true)
+      const {data} = await axios({
+        method: "post",
+        url: `${
           import.meta.env.VITE_BACKEND_URL
         }/api/content-generation/audio-generation`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+        data: formData,
+        headers: {
+          "Content-Type": `form-data;`,
+        },
+      });
 
-      const data = await response.json();
-      console.log("Audio Generated:", data);
+      console.log('Data', data);
+
+      setoutputUrl(`${import.meta.env.VITE_BACKEND_URL}${data.audioUrl}`);
+      
 
       setError("");
     } catch (err) {
       setError("Failed to generate audio. Please try again.");
+    }
+    finally{
+      setLoading(false)
     }
   };
 
@@ -114,8 +126,8 @@ export default function GenerateAudio() {
             className="w-full p-3 bg-gray-50 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
           >
             <option value="">Select Language</option>
-            <option value="hindi">Hindi</option>
-            <option value="english">English</option>
+            <option value="hi">Hindi</option>
+            <option value="en">English</option>
           </select>
         </div>
 
@@ -191,6 +203,17 @@ export default function GenerateAudio() {
           </button>
         </div>
       </motion.form>
+
+      {loading && <AudioLoader />}
+      {outputUrl && (
+        <div className="mt-4">
+          <p className="text-black font-medium">Generated Audio:</p>
+          <audio controls className="w-full mt-2">
+            <source src={outputUrl} type="audio/mp3" />
+            Your browser does not support the audio element.
+          </audio>
+        </div>
+      )}
     </div>
   );
 }

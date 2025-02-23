@@ -12,6 +12,7 @@ import GenerateAudio from "./pages/GenerateAudio";
 import GenerateContent from "./pages/GenerateContent";
 import { ScriptContextProvider } from "./context/ScriptContext";
 import Dashboard from "./pages/Dashboard";
+import AudioLoader from "./components/AudioLoader";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
             </Route>
               <Route path="/signup" element={<Signup />} />
               <Route path="/login" element={<Login />} />
+              <Route path="/loader" element={<AudioLoader />} />
           </Routes>
 
           <Toaster />
