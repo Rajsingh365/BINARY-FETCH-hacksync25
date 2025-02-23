@@ -84,8 +84,8 @@ export default function GenerateContent() {
   };
 
   return (
-    <div className="flex flex-col gap-6 p-6 max-w-2xl mx-auto bg-white text-black rounded-lg shadow-lg">
-      <h1 className="text-4xl font-bold">Generate Script For Podcast</h1>
+    <div className="flex flex-col gap-6 p-6 max-w-2xl mx-auto bg-white text-black rounded-lg shadow-lg mt-4">
+      <h1 className="text-3xl ">Generate Script For Podcast</h1>
       <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <input
@@ -164,7 +164,7 @@ export default function GenerateContent() {
 
           <Link
             to="/generate-audio"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-all flex items-center gap-1"
+            className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg transition-all flex items-center gap-1"
           >
             <AudioFile /> Generate Audio
           </Link>

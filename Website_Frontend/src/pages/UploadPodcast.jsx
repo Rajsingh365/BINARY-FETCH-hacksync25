@@ -2,17 +2,23 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { CloudUpload, Schedule } from "@mui/icons-material";
 import toast from "react-hot-toast";
+import axios from "axios";
 import { useScriptContext } from "../context/ScriptContext";
+import { useAuthContext } from "../context/AuthContext";
 
 export function UploadPodcast() {
-  const { textScript,tags,title ,setTextScript,setTags,setTitle} = useScriptContext(); 
+  const { textScript, tags, title, setTextScript, setTags, setTitle } =
+    useScriptContext();
+  const { authToken } = useAuthContext();
 
   const [formData, setFormData] = useState({
     title: title || "",
     script: textScript || "",
     tags: tags || "",
     image: null,
-    audioFile: null, 
+    audioFile: null,
+    status: "uploaded", // Default status
+    scheduleTime: "",
   });
 
   const [uploading, setUploading] = useState(false);
@@ -23,8 +29,10 @@ export function UploadPodcast() {
     setFormData((prev) => ({
       ...prev,
       script: textScript || "",
+      title: title || "",
+      tags: tags || "",
     }));
-  }, [textScript]);
+  }, [textScript, title, tags]);
 
   // Generate audio preview URL
   useEffect(() => {
@@ -36,13 +44,16 @@ export function UploadPodcast() {
     }
   }, [formData.audioFile]);
 
-  // ✅ Handle File Uploads (Image & Audio)
+  // Handle File Uploads (Image & Audio)
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
     const { name } = e.target;
     setFormData((prev) => ({ ...prev, [name]: file }));
+
+    // Debugging log
+    console.log(`File Uploaded: ${name} - ${file.name}`);
 
     if (name === "audioFile") {
       const objectUrl = URL.createObjectURL(file);
@@ -55,7 +66,7 @@ export function UploadPodcast() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // Submit Podcast Function
+  // Handle Form Submission
   const handleSubmit = async (isScheduled) => {
     if (!formData.title || !formData.script || !formData.audioFile) {
       toast.error("Please fill in all required fields!");
@@ -66,28 +77,53 @@ export function UploadPodcast() {
     const podcastData = new FormData();
     podcastData.append("title", formData.title);
     podcastData.append("script", formData.script);
-    podcastData.append("tags", formData.tags);
-    podcastData.append("image", formData.image);
-    podcastData.append("audioFile", formData.audioFile);
-    podcastData.append("isScheduled", isScheduled);
+    podcastData.append("tags", JSON.stringify(formData.tags.split(","))); // Convert tags to JSON array
+    podcastData.append("status", formData.status);
+    podcastData.append("audio", formData.audioFile); // ✅ Backend expects "audio" field
+    podcastData.append(
+      "scheduleTime",
+      isScheduled ? formData.scheduleTime : new Date().toISOString()
+    );
+
+    if (formData.image) {
+      podcastData.append("thumbnail", formData.image);
+    }
+  
 
     try {
-      // Simulate API Call
-      await new Promise((resolve) => setTimeout(resolve, 2000));
+      podcastData.forEach((value, key) => {
+        console.log(key, value);
+      });
+      const response = await axios.post(
+        `${import.meta.env.VITE_BACKEND_URL}/api/podcast`,
+        podcastData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${authToken}`,
+          },
+        }
+      );
 
       toast.success(isScheduled ? "Podcast Scheduled!" : "Podcast Uploaded!");
+      console.log("Response:", response.data);
+
       setFormData({
         title: "",
         script: "",
         tags: "",
         image: null,
         audioFile: null,
+        status: "uploaded",
+        scheduleTime: "",
       });
-      setAudioUrl(null); 
-      setTags("")
-      setTextScript("")
-      setTitle("")
+
+      setAudioUrl(null);
+      setTags("");
+      setTextScript("");
+      setTitle("");
     } catch (error) {
+      console.error("Error uploading podcast:", error);
       toast.error("Error uploading podcast!");
     } finally {
       setUploading(false);
@@ -185,6 +221,20 @@ export function UploadPodcast() {
               value={formData.tags}
               onChange={handleChange}
               placeholder="e.g. tech, business, AI"
+              className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-400 outline-none"
+            />
+          </div>
+
+          {/* Schedule Time (Optional) */}
+          <div>
+            <label className="block text-gray-700 font-medium">
+              Schedule Time (Optional)
+            </label>
+            <input
+              type="datetime-local"
+              name="scheduleTime"
+              value={formData.scheduleTime}
+              onChange={handleChange}
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring focus:ring-blue-400 outline-none"
             />
           </div>

@@ -5,10 +5,11 @@ import podcastImage from "../assets/podcastImage.webp";
 
 export const Signup = () => {
   const [inputs, setInputs] = useState({
+    name: "",
     email: "",
     password: "",
     confirmPassword: "",
-    preferences: [],
+    genres: [],
   });
 
   const { loading, signup } = useSignup();
@@ -20,13 +21,13 @@ export const Signup = () => {
     if (success) navigate("/");
   };
 
-  // Handle Multi-Select Preferences
-  const handlePreferenceChange = (preference) => {
+  // Handle Multi-Select Genres
+  const handleGenreChange = (genre) => {
     setInputs((prev) => ({
       ...prev,
-      preferences: prev.preferences.includes(preference)
-        ? prev.preferences.filter((p) => p !== preference)
-        : [...prev.preferences, preference],
+      genres: prev.genres.includes(genre)
+        ? prev.genres.filter((g) => g !== genre)
+        : [...prev.genres, genre],
     }));
   };
 
@@ -35,14 +36,26 @@ export const Signup = () => {
       className="relative w-full min-h-screen bg-cover bg-center flex items-center justify-center"
       style={{ backgroundImage: `url(${podcastImage})` }}
     >
-
       {/* Signup Form */}
-      <div className="relative z-10 w-full max-w-md border border-gray-300 bg-white rounded-xl p-8 shadow-lg  bg-opacity-80 backdrop-blur-md">
+      <div className="relative z-10 w-full max-w-md border border-gray-300 bg-white rounded-xl p-8 shadow-lg bg-opacity-80 backdrop-blur-md">
         <h1 className="text-3xl font-semibold text-center text-black mb-6">
           Sign Up
         </h1>
 
         <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Name Input */}
+          <div>
+            <label className="block text-black text-sm mb-2">Full Name</label>
+            <input
+              type="text"
+              value={inputs.name}
+              onChange={(e) => setInputs({ ...inputs, name: e.target.value })}
+              placeholder="Enter your full name"
+              className="w-full px-4 py-2 border border-gray-500 rounded-lg focus:ring focus:ring-yellow-400 outline-none text-black"
+              required
+            />
+          </div>
+
           {/* Email Input */}
           <div>
             <label className="block text-black text-sm mb-2">Email</label>
@@ -88,25 +101,25 @@ export const Signup = () => {
             />
           </div>
 
-          {/* Preferences (Multi-Select) */}
+          {/* Genres (Multi-Select) */}
           <div>
             <label className="block text-black text-sm mb-2">
-              Select Your Podcast Preferences
+              Select Your Podcast Genres
             </label>
             <div className="flex flex-wrap gap-3">
               {["Technology", "Business", "Comedy", "Health", "Music"].map(
-                (preference) => (
+                (genre) => (
                   <label
-                    key={preference}
+                    key={genre}
                     className="flex items-center space-x-2 text-black px-3 py-2 rounded-lg cursor-pointer hover:bg-gray-200 transition"
                   >
                     <input
                       type="checkbox"
-                      checked={inputs.preferences.includes(preference)}
-                      onChange={() => handlePreferenceChange(preference)}
+                      checked={inputs.genres.includes(genre)}
+                      onChange={() => handleGenreChange(genre)}
                       className="form-checkbox text-yellow-500"
                     />
-                    <span>{preference}</span>
+                    <span>{genre}</span>
                   </label>
                 )
               )}

@@ -5,3 +5,4 @@ misc
 *_venv*
 node_modules
 __pycache__
+tmp

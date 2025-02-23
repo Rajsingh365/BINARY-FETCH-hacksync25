@@ -19,6 +19,7 @@ class GenerateScript :
     prompt_script = PromptTemplate.from_template(
     """
     ### PODCAST SCRIPT CREATION
+    ### PODCAST SCRIPT CREATION
     Title of the episode : {title}
     ### BRIEF
     The podcast must revolve around : {summary}

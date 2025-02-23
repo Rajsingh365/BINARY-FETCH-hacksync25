@@ -1,5 +1,6 @@
 import Podcast from "../models/podcast.model.js";
 import { StatusCodes } from "http-status-codes";
+import { v2 as cloudinary } from "cloudinary";
 
 export const getAllPodcasts = async (req, res) => {
   try {
@@ -21,30 +22,52 @@ export const getAllPodcasts = async (req, res) => {
 
 export const createPodcast = async (req, res) => {
   try {
-    // Add creator to request body
-    req.body.creator = req.user.userId;
+    const { title, script, tags, status, scheduleTime } = req.body;
 
-    // Validate required fields
-    const { title, script, audioUrl, thumbnail } = req.body;
-    if (!title || !script || !audioUrl || !thumbnail) {
-      return res.status(StatusCodes.BAD_REQUEST).json({
-        msg: "Please provide all required fields",
-      });
+    if (!req.files || !req.files.audio) {
+      return res.status(400).json({ error: "No audio file uploaded" });
     }
 
-    const podcast = await Podcast.create(req.body);
+    console.log("Received Files:", req.files);
 
-    res.status(StatusCodes.CREATED).json({
-      msg: "Podcast created successfully",
-      podcast,
+    const audioResult = await cloudinary.uploader.upload(req.files.audio.tempFilePath, {
+      use_filename: true,
+      folder: "podcasts",
+      resource_type: "auto",
     });
-  } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      msg: "Error creating podcast",
-      error: error.message,
+
+    let thumbnailUrl = ""; 
+    console.log("thumbnail", req.files);
+
+    if (req.files.thumbnail) {
+      const thumbnailResult = await cloudinary.uploader.upload(req.files.thumbnail.tempFilePath, {
+        use_filename: true,
+        folder: "podcast_thumbnails",
+        resource_type: "image",
+      });
+
+      thumbnailUrl = thumbnailResult.secure_url;
+    }
+
+    // ✅ Store Podcast Data in Database
+    const podcast = await Podcast.create({
+      title,
+      script,
+      thumbnail: thumbnailUrl, // Store the uploaded image URL
+      tags: JSON.parse(tags), // Convert tags from JSON string to array
+      status: status || "uploaded",
+      creator: req.user.userId, // Assuming user is authenticated
+      audioUrl: audioResult.secure_url, // Store uploaded audio URL
+      scheduleTime,
     });
+
+    return res.json({ podcast });
+  } catch (err) {
+    console.error("Upload Error:", err);
+    res.status(500).json({ error: "Podcast upload failed" });
   }
 };
+
 
 export const deletePodcast = async (req, res) => {
   try {
@@ -73,4 +96,11 @@ export const deletePodcast = async (req, res) => {
       error: error.message,
     });
   }
+};
+
+export const getPodcastsByCreator = async (req, res) => {
+  const userId = req.params.id;
+  const podcasts = await Podcast.find({ creator: userId });
+
+  res.json({ count: podcasts.length, podcasts });
 };
