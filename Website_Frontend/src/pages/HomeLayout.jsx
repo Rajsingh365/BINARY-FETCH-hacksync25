@@ -9,7 +9,7 @@ export const HomeLayout = () => {
       <Navbar />
       <div className="flex h-screen mt-12">
         <Sidebar />
-        <div className="page-container ml-72 w-[80%] overflow-y-auto pt-16">
+        <div className="page-container ml-72 w-[80%] overflow-y-auto pt-8">
           <Outlet />
         </div>
       </div>

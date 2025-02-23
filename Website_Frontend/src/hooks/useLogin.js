@@ -7,6 +7,8 @@ function useLogin() {
   const { setAuthUser, setAuthToken } = useAuthContext();
 
   const login = async (email, password) => {
+    console.log("email", email);
+    console.log("password", password); 
     const success = handleInputErrors(email, password);
     if (!success) return false;
 

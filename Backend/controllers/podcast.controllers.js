@@ -21,32 +21,53 @@ export const getAllPodcasts = async (req, res) => {
 };
 
 export const createPodcast = async (req, res) => {
-  const { title, script, thumbnail, tags, status, scheduleTime } = req.body;
-  console.log(req.files);
   try {
-    const result = await cloudinary.uploader.upload(req.files.audio.tempFilePath, {
+    const { title, script, tags, status, scheduleTime } = req.body;
+
+    if (!req.files || !req.files.audio) {
+      return res.status(400).json({ error: "No audio file uploaded" });
+    }
+
+    console.log("Received Files:", req.files);
+
+    const audioResult = await cloudinary.uploader.upload(req.files.audio.tempFilePath, {
       use_filename: true,
       folder: "podcasts",
-      resource_type: "auto", // or "raw"
+      resource_type: "auto",
     });
 
+    let thumbnailUrl = ""; 
+    console.log("thumbnail", req.files);
+
+    if (req.files.thumbnail) {
+      const thumbnailResult = await cloudinary.uploader.upload(req.files.thumbnail.tempFilePath, {
+        use_filename: true,
+        folder: "podcast_thumbnails",
+        resource_type: "image",
+      });
+
+      thumbnailUrl = thumbnailResult.secure_url;
+    }
+
+    // ✅ Store Podcast Data in Database
     const podcast = await Podcast.create({
       title,
       script,
-      thumbnail,
-      tags: JSON.parse(tags),
+      thumbnail: thumbnailUrl, // Store the uploaded image URL
+      tags: JSON.parse(tags), // Convert tags from JSON string to array
       status: status || "uploaded",
-      creator: req.user.userId,
-      audioUrl: result.secure_url,
+      creator: req.user.userId, // Assuming user is authenticated
+      audioUrl: audioResult.secure_url, // Store uploaded audio URL
       scheduleTime,
     });
 
     return res.json({ podcast });
   } catch (err) {
-    console.log({ msg: "upload err :(", err });
+    console.error("Upload Error:", err);
+    res.status(500).json({ error: "Podcast upload failed" });
   }
-  res.send("Error");
 };
+
 
 export const deletePodcast = async (req, res) => {
   try {

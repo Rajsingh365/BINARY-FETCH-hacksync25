@@ -114,6 +114,9 @@ export default function GenerateAudio() {
 
   return (
     <div className="flex flex-col gap-6 p-6 max-w-2xl mx-auto bg-white text-black rounded-lg shadow-lg">
+      <h1 className="text-3xl font-semibold text-center text-black mb-6">
+        Generate Podcast  
+      </h1>
       <motion.form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <label className="block text-black mb-2 font-medium">Script</label>

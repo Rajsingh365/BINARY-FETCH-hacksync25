@@ -6,8 +6,8 @@ function useSignup() {
   const [loading, setLoading] = useState(false);
   const { setAuthUser, setAuthToken } = useAuthContext();
 
-  const signup = async ({ email, password, confirmPassword, preferences }) => {
-    const success = handleInputErrors({ email, password, confirmPassword, preferences });
+  const signup = async ({ name, email, password, confirmPassword, genres }) => {
+    const success = handleInputErrors({ name, email, password, confirmPassword, genres });
     if (!success) return false;
 
     setLoading(true);
@@ -16,7 +16,7 @@ function useSignup() {
       const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/auth/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password, confirmPassword, preferences }),
+        body: JSON.stringify({ name, email, password, confirmPassword, genres }),
       });
 
       const data = await res.json();
@@ -44,9 +44,14 @@ function useSignup() {
 
 export default useSignup;
 
-function handleInputErrors({ email, password, confirmPassword, preferences }) {
-  if (!email || !password || !confirmPassword || preferences.length === 0) {
-    toast.error("Please fill in all fields and select at least one preference");
+function handleInputErrors({ name, email, password, confirmPassword, genres }) {
+  if (!name || !email || !password || !confirmPassword || genres.length === 0) {
+    toast.error("Please fill in all fields and select at least one genre");
+    return false;
+  }
+
+  if (!/^[a-zA-Z\s]+$/.test(name)) {
+    toast.error("Name must contain only letters and spaces");
     return false;
   }
 
