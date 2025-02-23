@@ -4,10 +4,12 @@ import { Menu } from "@mui/icons-material";
 import { useState } from "react";
 import { motion } from "framer-motion";
 import logo from "./../assets/images/logo.png"
+import { useAuthContext } from "../context/AuthContext";
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
+  const {authUser} = useAuthContext()
 
   const isActive = (path) => location.pathname === path;
 
@@ -64,15 +66,24 @@ export function Navbar() {
               <span>Contact Us</span>
             </Link>
           </li>
-          <li>
+          {!authUser && <li>
+            <Link
+              to="/login"
+              className="flex items-center gap-2 p-2 text-red-600 hover:text-red-700 transition-colors"
+            >
+              {/* <Login /> */}
+              <span>Login</span>
+            </Link>
+          </li>}
+          {authUser && <li>
             <Link
               to="/login"
               className="flex items-center gap-2 p-2 text-red-600 hover:text-red-700 transition-colors"
             >
               <Login />
-              <span>Login</span>
+              <span>Log out</span>
             </Link>
-          </li>
+          </li>}
         </ul>
 
         {/* Mobile Menu Button - Right aligned */}

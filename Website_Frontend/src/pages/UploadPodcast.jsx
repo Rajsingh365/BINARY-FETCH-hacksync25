@@ -23,6 +23,7 @@ export function UploadPodcast() {
   });
 
   const [uploading, setUploading] = useState(false);
+  const [scheduling, setScheduling] = useState(false)
   const [audioUrl, setAudioUrl] = useState(null);
 
   // Update state when context values change
@@ -74,7 +75,10 @@ export function UploadPodcast() {
       return;
     }
   
-    setUploading(true);
+    if(!isScheduled)
+      setUploading(true);
+    else 
+      setScheduling(true)
     const podcastData = new FormData();
     podcastData.append("title", formData.title);
     podcastData.append("script", formData.script);
@@ -128,7 +132,10 @@ export function UploadPodcast() {
       console.error("Error uploading podcast:", error);
       toast.error("Error uploading podcast!");
     } finally {
-      setUploading(false);
+      if(!isScheduled)
+        setUploading(false);
+      else 
+        setScheduling(false)
     }
   };
   return (
@@ -256,10 +263,10 @@ export function UploadPodcast() {
               type="button"
               onClick={() => handleSubmit(true)}
               className="px-6 py-2 bg-yellow-600 text-white rounded-lg flex items-center gap-2 hover:bg-yellow-700 transition"
-              disabled={uploading}
+              disabled={scheduling}
             >
               <Schedule />
-              {uploading ? "Scheduling..." : "Schedule"}
+              {scheduling ? "Scheduling..." : "Schedule"}
             </button>
           </div>
         </div>

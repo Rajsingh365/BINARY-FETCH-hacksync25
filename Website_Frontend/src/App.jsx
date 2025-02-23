@@ -37,7 +37,7 @@ function App() {
               <Route path="/tutorials" element={<Tutorials />} />
               <Route path="/community" element={<Community />} />
               <Route path="/podcaster-hub" element={<PodcasterHub />} />
-              <Route path="/other-podcaster-hub/:user_id" element={<Othe  rPodcastersProfile />} />
+              <Route path="/other-podcaster-hub/:user_id" element={<OtherPodcastersProfile />} />
 
 
               {/* <Route path="/signup" element={<Signup />} />
