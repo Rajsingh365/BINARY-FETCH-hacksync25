@@ -8,9 +8,10 @@ export const useScriptContext = () => {
 
 export const ScriptContextProvider = ({children}) => {
   const [textScript, setTextScript] = useState("");
-  const [audioFile, setAudioFile] = useState(null);
+  const [tags, setTags] = useState("")
+  const [title,setTitle] = useState("")
   
-  return <ScriptContext.Provider value={{textScript, setTextScript,audioFile, setAudioFile}}>
+  return <ScriptContext.Provider value={{textScript, setTextScript, tags, setTags,title,setTitle}}>
     {children}
     </ScriptContext.Provider>;
 }

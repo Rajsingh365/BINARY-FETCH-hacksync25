@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import AudioLoader from "../components/AudioLoader";
 import toast from "react-hot-toast";
-import Piyush from "../assets/piyush.wav";
 
 export default function GenerateAudio() {
   const { textScript, setTextScript, setAudioFile, audioFile } =
@@ -22,22 +21,30 @@ export default function GenerateAudio() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    setAudioFile(Piyush);
     setEditableText(textScript);
   }, [textScript]);
-  async function convertAudioToFile() {
-    try {
-      const response = await fetch(Piyush); // Fetch the audio file as a blob
-      const blob = await response.blob();
 
-      const audio = new File([blob], "piyush.wav", { type: "audio/wav" });
-
-      console.log("Converted File:", audio); // Debugging log
-      setAudioFile(audio);
-    } catch (error) {
-      console.error("Error converting audio file:", error);
-    }
-  }
+  // async function convertAudioToFile(audioUrl) {
+  //   try {
+  //     const response = await fetch(audioUrl, { mode: "cors" }); // Ensure CORS is allowed
+  //     if (!response.ok) throw new Error(`Failed to fetch audio: ${response.statusText}`);
+  
+  //     const blob = await response.blob();
+  
+  //     // Extract filename from URL (default to "audio.wav" if not found)
+  //     const filename = audioUrl.split("/").pop() || "audio.wav";
+      
+  //     // Convert Blob to File
+  //     const audioFile = new File([blob], filename, { type: blob.type || "audio/wav" });
+  
+  //     console.log("Converted File:", audioFile);
+  //     setAudioFile(audioFile); // Update state/context
+  //   } catch (error) {
+  //     console.error("Error converting audio file:", error);
+  //   }
+  // }
+  
+  
 
   const handleFileUpload = (event) => {
     const files = Array.from(event.target.files);
@@ -87,10 +94,10 @@ export default function GenerateAudio() {
           "Content-Type": `multipart/form-data`,
         },
       });
-
-      setOutputUrl(`${import.meta.env.VITE_BACKEND_URL}${data.audioUrl}`);
-      setAudioFile(`${import.meta.env.VITE_BACKEND_URL}${data.audioUrl}`)
-      convertAudioToFile();
+      let audioUrl = `${import.meta.env.VITE_BACKEND_URL}${data.audioUrl}`;
+      console.log("Audio URL:", audioUrl);
+      setOutputUrl(audioUrl);
+      // convertAudioToFile(audioUrl);
       setError("");
     } catch (err) {
       setError("Failed to generate audio. Please try again.");
@@ -202,7 +209,7 @@ export default function GenerateAudio() {
           </div>
           <button
             type="submit"
-            className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            className="px-6 py-2  text-white rounded-lg bg-purple-600 hover:bg-purple-700transition-colors"
           >
             Generate Audio
           </button>

@@ -5,14 +5,14 @@ import toast from "react-hot-toast";
 import { useScriptContext } from "../context/ScriptContext";
 
 export function UploadPodcast() {
-  const { textScript, audioFile, setAudioFile } = useScriptContext();
+  const { textScript,tags,title ,setTextScript,setTags,setTitle} = useScriptContext(); 
 
   const [formData, setFormData] = useState({
-    title: "",
+    title: title || "",
     script: textScript || "",
-    tags: "",
+    tags: tags || "",
     image: null,
-    audioFile: audioFile || null, // Auto-add audio file if available
+    audioFile: null, 
   });
 
   const [uploading, setUploading] = useState(false);
@@ -23,9 +23,8 @@ export function UploadPodcast() {
     setFormData((prev) => ({
       ...prev,
       script: textScript || "",
-      audioFile: audioFile || null,
     }));
-  }, [textScript, audioFile]);
+  }, [textScript]);
 
   // Generate audio preview URL
   useEffect(() => {
@@ -37,12 +36,18 @@ export function UploadPodcast() {
     }
   }, [formData.audioFile]);
 
-  // Handle File Upload
+  // ✅ Handle File Uploads (Image & Audio)
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
-    setFormData({ ...formData, audioFile: file });
-    setAudioFile(file); // Update context
+
+    const { name } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: file }));
+
+    if (name === "audioFile") {
+      const objectUrl = URL.createObjectURL(file);
+      setAudioUrl(objectUrl);
+    }
   };
 
   // Handle Text Inputs
@@ -78,8 +83,10 @@ export function UploadPodcast() {
         image: null,
         audioFile: null,
       });
-      setAudioFile(null); // Clear audio in context after upload
-      setAudioUrl(null); // Reset audio preview
+      setAudioUrl(null); 
+      setTags("")
+      setTextScript("")
+      setTitle("")
     } catch (error) {
       toast.error("Error uploading podcast!");
     } finally {

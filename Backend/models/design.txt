@@ -1,0 +1,16 @@
+listener : 
+
+
+podcaster(user) : 
+name
+email
+password
+preferences
+podcasts : []
+
+podcast : 
+title,
+script,
+url,
+tags
+image,
