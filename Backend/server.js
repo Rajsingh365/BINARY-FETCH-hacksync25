@@ -28,11 +28,8 @@ app.use(express.json());
 app.use(express.static("output"));
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
-<<<<<<<<< Temporary merge branch 1
-=========
 
-// app.use(fileUpload());
->>>>>>>>> Temporary merge branch 2
+
 app.use(
   fileUpload({
     useTempFiles: true,

@@ -36,11 +36,14 @@ function App() {
               <Route path="/webinars" element={<Webinar />} />
               <Route path="/tutorials" element={<Tutorials />} />
               <Route path="/community" element={<Community />} />
+              <Route path="/podcaster-hub" element={<PodcasterHub />} />
+              <Route path="/other-podcaster-hub/:user_id" element={<Othe  rPodcastersProfile />} />
+
 
               {/* <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/profile" element={<Profile />} /> */}
-          
+
             </Route>
               <Route path="/signup" element={<Signup />} />
               <Route path="/login" element={<Login />} />
