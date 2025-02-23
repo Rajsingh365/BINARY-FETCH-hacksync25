@@ -12,6 +12,7 @@ import listenerRouter from "./routes/listener.routes.js";
 import contentGenerationRoutes from "./routes/contentgeneration.route.js";
 import { protectRoute } from "./middleware/authentication.js";
 import { v2 as cloudinary } from "cloudinary";
+import { startAgenda } from "./agenda.js";
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -44,7 +45,8 @@ app.get("/", (req, res) => {
   res.json({ message: "Hello world" });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, async() => {
   connectDb();
   console.log(`Server is running on port ${PORT}`);
+  await startAgenda();
 });

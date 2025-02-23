@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { useScriptContext } from "../context/ScriptContext";
 import { useAuthContext } from "../context/AuthContext";
+import moment from "moment-timezone";
 
 export function UploadPodcast() {
   const { textScript, tags, title, setTextScript, setTags, setTitle } =
@@ -72,28 +73,30 @@ export function UploadPodcast() {
       toast.error("Please fill in all required fields!");
       return;
     }
-
+  
     setUploading(true);
     const podcastData = new FormData();
     podcastData.append("title", formData.title);
     podcastData.append("script", formData.script);
-    podcastData.append("tags", JSON.stringify(formData.tags.split(","))); // Convert tags to JSON array
-    podcastData.append("status", formData.status);
-    podcastData.append("audio", formData.audioFile); // ✅ Backend expects "audio" field
-    podcastData.append(
-      "scheduleTime",
-      isScheduled ? formData.scheduleTime : new Date().toISOString()
-    );
-
+    podcastData.append("tags", JSON.stringify(formData.tags.split(","))); 
+    podcastData.append("audio", formData.audioFile); 
+  
     if (formData.image) {
       podcastData.append("thumbnail", formData.image);
     }
   
-
+    // ✅ Format Schedule Time (Use selected time or current time)
+    const selectedDateTime = formData.scheduleTime
+      ? moment.tz(formData.scheduleTime, "Asia/Kolkata").format("YYYY-MM-DDTHH:mm:ss.SSSZ")
+      : moment().tz("Asia/Kolkata").format("YYYY-MM-DDTHH:mm:ss.SSSZ");
+  
+    podcastData.append("scheduleTime", selectedDateTime);
+  
     try {
       podcastData.forEach((value, key) => {
         console.log(key, value);
       });
+  
       const response = await axios.post(
         `${import.meta.env.VITE_BACKEND_URL}/api/podcast`,
         podcastData,
@@ -104,20 +107,19 @@ export function UploadPodcast() {
           },
         }
       );
-
+  
       toast.success(isScheduled ? "Podcast Scheduled!" : "Podcast Uploaded!");
       console.log("Response:", response.data);
-
+  
       setFormData({
         title: "",
         script: "",
         tags: "",
         image: null,
         audioFile: null,
-        status: "uploaded",
         scheduleTime: "",
       });
-
+  
       setAudioUrl(null);
       setTags("");
       setTextScript("");
@@ -129,7 +131,6 @@ export function UploadPodcast() {
       setUploading(false);
     }
   };
-
   return (
     <div className="min-h-screen flex items-center justify-center p-6">
       <motion.div

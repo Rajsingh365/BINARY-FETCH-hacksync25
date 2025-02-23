@@ -1,6 +1,7 @@
 import Podcast from "../models/podcast.model.js";
 import { StatusCodes } from "http-status-codes";
 import { v2 as cloudinary } from "cloudinary";
+import { agenda } from "../agenda.js";
 
 export const getAllPodcasts = async (req, res) => {
   try {
@@ -22,7 +23,8 @@ export const getAllPodcasts = async (req, res) => {
 
 export const createPodcast = async (req, res) => {
   try {
-    const { title, script, tags, status, scheduleTime } = req.body;
+    const { title, script, tags, scheduleTime } = req.body;
+    const postTime = new Date(scheduleTime);
 
     if (!req.files || !req.files.audio) {
       return res.status(400).json({ error: "No audio file uploaded" });
@@ -55,12 +57,12 @@ export const createPodcast = async (req, res) => {
       script,
       thumbnail: thumbnailUrl, // Store the uploaded image URL
       tags: JSON.parse(tags), // Convert tags from JSON string to array
-      status: status || "uploaded",
       creator: req.user.userId, // Assuming user is authenticated
       audioUrl: audioResult.secure_url, // Store uploaded audio URL
       scheduleTime,
     });
 
+    agenda.schedule(postTime, "Post", { podcastId: podcast._id });
     return res.json({ podcast });
   } catch (err) {
     console.error("Upload Error:", err);
