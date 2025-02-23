@@ -1,5 +1,6 @@
 import Podcast from "../models/podcast.model.js";
 import { StatusCodes } from "http-status-codes";
+import { v2 as cloudinary } from "cloudinary";
 
 export const getAllPodcasts = async (req, res) => {
   try {
@@ -20,30 +21,30 @@ export const getAllPodcasts = async (req, res) => {
 };
 
 export const createPodcast = async (req, res) => {
+  const { title, script, thumbnail, tags, status, scheduleTime } = req.body;
   try {
-    // Add creator to request body
-    req.body.creator = req.user.userId;
-
-    // Validate required fields
-    const { title, script, audioUrl, thumbnail } = req.body;
-    if (!title || !script || !audioUrl || !thumbnail) {
-      return res.status(StatusCodes.BAD_REQUEST).json({
-        msg: "Please provide all required fields",
-      });
-    }
-
-    const podcast = await Podcast.create(req.body);
-
-    res.status(StatusCodes.CREATED).json({
-      msg: "Podcast created successfully",
-      podcast,
+    const result = await cloudinary.uploader.upload(req.files.audio.tempFilePath, {
+      use_filename: true,
+      folder: "podcasts",
+      resource_type: "auto", // or "raw"
     });
-  } catch (error) {
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({
-      msg: "Error creating podcast",
-      error: error.message,
+
+    const podcast = await Podcast.create({
+      title,
+      script,
+      thumbnail,
+      tags,
+      status: status || "uploaded",
+      creator: req.user.userId,
+      audioUrl: result.secure_url,
+      scheduleTime,
     });
+
+    return res.json({ podcast });
+  } catch (err) {
+    console.log({ msg: "upload err :(", err });
   }
+  res.send("Error");
 };
 
 export const deletePodcast = async (req, res) => {

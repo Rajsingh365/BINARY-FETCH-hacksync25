@@ -27,6 +27,24 @@ const podcastSchema = new mongoose.Schema(
       type: String,
       required: [true, "Thumbnail is required"],
     },
+    status: {
+      type: String,
+      enum: ["scheduled", "uploaded"],
+      default: ["uploaded"],
+    },
+    scheduleTime: {
+      type: Date,
+    },
+    views: {
+      type: Number,
+      default: 0,
+      min: [0, "View count must be non-negative"],
+    },
+    likes: {
+      type: Number,
+      default: 0,
+      min: [0, "Like count must be non-negative"],
+    },
   },
   { timestamps: true }
 );
