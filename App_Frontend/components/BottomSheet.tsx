@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { Podcast } from "@/data/dummy";
 import { useAudio } from "@/context/AudioContext";
+import { Ionicons } from "@expo/vector-icons";
 
 export const BottomDrawer = ({
   onClose,
@@ -51,12 +52,24 @@ export const BottomDrawer = ({
             <Text style={styles.creator}>{playpodcast?.contentCreator}</Text>
           </View>
 
-          {/* Play/Pause Button */}
-          <TouchableOpacity onPress={togglePlayPause} style={styles.playButton}>
-            <Text style={styles.playButtonText}>
-              {isPlaying ? "Pause" : "Play"}
-            </Text>
-          </TouchableOpacity>
+          {/* Controls */}
+          <View style={styles.controlsContainer}>
+            <TouchableOpacity style={styles.controlButton}>
+              <Ionicons name="play-skip-back" size={15} color="#fff" />
+            </TouchableOpacity>
+
+            <TouchableOpacity onPress={togglePlayPause} style={styles.playButton}>
+              <Ionicons
+                name={isPlaying ? "pause" : "play"}
+                size={18}
+                color="#fff"
+              />
+            </TouchableOpacity>
+
+            <TouchableOpacity style={styles.controlButton}>
+              <Ionicons name="play-skip-forward" size={15} color="#fff" />
+            </TouchableOpacity>
+          </View>
         </View>
       </BottomSheetView>
     </BottomSheet>
@@ -67,6 +80,7 @@ const styles = StyleSheet.create({
   contentContainer: {
     flex: 1,
     padding: 16,
+    backgroundColor: "#f9f9f9",
   },
   playerContainer: {
     flexDirection: "row",
@@ -74,31 +88,36 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   thumbnail: {
-    width: 50,
-    height: 50,
-    borderRadius: 5,
+    width: 55,
+    height: 55,
+    borderRadius: 8,
   },
   textContainer: {
     flex: 1,
-    marginLeft: 10,
+    marginLeft: 12,
   },
   title: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: "bold",
+    color: "#333",
   },
   creator: {
     fontSize: 14,
-    color: "#666",
+    color: "#777",
+  },
+  controlsContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  controlButton: {
+    backgroundColor: "#1DB954",
+    padding: 10,
+    borderRadius: 20,
   },
   playButton: {
     backgroundColor: "#1DB954",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-  },
-  playButtonText: {
-    color: "#fff",
-    fontSize: 14,
-    fontWeight: "bold",
+    padding: 12,
+    borderRadius: 30,
   },
 });
