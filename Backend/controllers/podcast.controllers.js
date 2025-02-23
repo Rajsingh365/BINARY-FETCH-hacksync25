@@ -22,6 +22,7 @@ export const getAllPodcasts = async (req, res) => {
 
 export const createPodcast = async (req, res) => {
   const { title, script, thumbnail, tags, status, scheduleTime } = req.body;
+  console.log(req.files);
   try {
     const result = await cloudinary.uploader.upload(req.files.audio.tempFilePath, {
       use_filename: true,
@@ -33,7 +34,7 @@ export const createPodcast = async (req, res) => {
       title,
       script,
       thumbnail,
-      tags,
+      tags: JSON.parse(tags),
       status: status || "uploaded",
       creator: req.user.userId,
       audioUrl: result.secure_url,
@@ -74,4 +75,11 @@ export const deletePodcast = async (req, res) => {
       error: error.message,
     });
   }
+};
+
+export const getPodcastsByCreator = async (req, res) => {
+  const userId = req.params.id;
+  const podcasts = await Podcast.find({ creator: userId });
+
+  res.json({ count: podcasts.length, podcasts });
 };
