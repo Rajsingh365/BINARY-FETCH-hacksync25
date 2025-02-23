@@ -58,11 +58,11 @@ const AudioLoader = () => {
   }, []);
 
   return (
-    <div className="relative flex items-center justify-center min-h-screen bg-black">
+    <div className="relative flex items-center justify-center">
       <canvas ref={canvasRef} className="rounded-lg shadow-lg" />
 
       {/* Microphone Icon */}
-      <div className="absolute flex flex-col items-center">
+      <div className="absolute flex flex-col items-center ">
         <FaMicrophone className="text-red-500 text-6xl mt-12 animate-pulse drop-shadow-md" />
         <span className="text-white mt-2 font-semibold">Audio Generating...</span>
       </div>

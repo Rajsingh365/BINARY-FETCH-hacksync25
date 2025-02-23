@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { useScriptContext } from "../context/ScriptContext";
 import { Edit, ContentCopy, UploadFile } from "@mui/icons-material";
 import axios from 'axios';
+import AudioLoader from "../components/AudioLoader";
+import toast from "react-hot-toast";
 
 
 export default function GenerateAudio() {
@@ -12,7 +14,7 @@ export default function GenerateAudio() {
   const [error, setError] = useState("");
   const [copied, setCopied] = useState(false);
   const [editableText, setEditableText] = useState(textScript);
-  const [audioFiles, setAudioFiles] = useState([]); // Maintain order of uploaded files
+  const [audioFiles, setAudioFiles] = useState([]);
   const [outputUrl, setoutputUrl] = useState(null);
   const [loading, setLoading] = useState(false)
   useEffect(() => {
@@ -41,6 +43,10 @@ export default function GenerateAudio() {
   // Handle form submission & display FormData
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if(loading) {
+      toast('Please wait for the current audio to be generated.')
+      return ;
+    }
     setoutputUrl(null)
     setError("")
 
@@ -79,7 +85,7 @@ export default function GenerateAudio() {
       console.log('Data', data);
 
       setoutputUrl(`${import.meta.env.VITE_BACKEND_URL}${data.audioUrl}`);
-      
+
 
       setError("");
     } catch (err) {
