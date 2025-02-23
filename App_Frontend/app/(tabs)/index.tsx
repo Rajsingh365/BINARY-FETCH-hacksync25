@@ -15,6 +15,7 @@ import { Podcast, Podcasts } from "@/data/dummy";
 export default function Home() {
   const groupedPodcasts = makeGroups(Podcasts);
   const [openPlayer, setOpenPlayer] = useState(false);
+  const [selectedPodcast, setSelectedPodcast] = useState<Podcast | null>(null);
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -39,6 +40,7 @@ export default function Home() {
                     <PodcastCard
                       episode={item}
                       onOpen={() => setOpenPlayer(true)}
+                      onSelected={() => setSelectedPodcast(item)}
                     />
                   )}
                 />
@@ -75,13 +77,17 @@ export default function Home() {
             pagingEnabled
             showsHorizontalScrollIndicator={false}
             contentContainerStyle={{ paddingHorizontal: 10 }}
-            renderItem={({ item }) => <CreatorSpecialCard podcast={item} onOpen={() => setOpenPlayer(true)}/>}
+            renderItem={({ item }) => (
+              <CreatorSpecialCard
+                podcast={item}
+                onOpen={() => setOpenPlayer(true)}
+                onSelected={() => setSelectedPodcast(item)}
+              />
+            )}
           />
         </View>
       </ScrollView>
-      {openPlayer && (
-            <BottomDrawer onClose={() => setOpenPlayer(false)} />
-        )}
+      {openPlayer && <BottomDrawer onClose={() => setOpenPlayer(false)} playpodcast={selectedPodcast} />}
     </SafeAreaView>
   );
 }
@@ -89,12 +95,17 @@ export default function Home() {
 function PodcastCard({
   episode,
   onOpen,
+  onSelected,
 }: {
   episode: Podcast;
   onOpen: () => void;
+  onSelected: () => void;
 }) {
   return (
-    <TouchableOpacity onPress={onOpen}>
+    <TouchableOpacity onPress={() => {
+      onOpen();
+      onSelected();
+    }}>
       <View style={styles.podcast_cardcontainer}>
         <Image
           source={{ uri: episode.thumbnail }}
@@ -122,12 +133,20 @@ function CreatorCard({ creator }: { creator: Podcast }) {
   );
 }
 
-function CreatorSpecialCard({ podcast,onOpen }: { 
-  podcast: Podcast,
+function CreatorSpecialCard({
+  podcast,
+  onOpen,
+  onSelected,
+}: {
+  podcast: Podcast;
   onOpen: () => void;
- }) {
+  onSelected: () => void;
+}) {
   return (
-    <TouchableOpacity onPress={onOpen}>
+    <TouchableOpacity onPress={() => {
+      onOpen();
+      onSelected();
+    }}>
       <View style={styles.special_card}>
         <Image source={{ uri: podcast.thumbnail }} style={styles.specialImg} />
         <View style={styles.special_textContainer}>
