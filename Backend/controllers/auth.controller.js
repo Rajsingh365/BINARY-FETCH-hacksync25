@@ -2,43 +2,47 @@ import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import generateTokenAndSetCookie from "../utils/generateToken.util.js";
 
-
 export const signUp = async (req, res) => {
+  console.log("sighnup controller");
   try {
-    const { fullName, username, password, confirmPassword, gender } = req.body;
+    const { name, email, password, confirmPassword, genres } = req.body;
+    console.log({ name, email, password, confirmPassword, genres });
 
+    // Validate required fields
+    if (!name || !email || !password || !confirmPassword || !genres?.length) {
+      return res.status(400).json({ error: "Please fill in all fields" });
+    }
 
     if (password !== confirmPassword) {
       return res.status(400).json({ error: "Passwords don't match" });
     }
 
-    const user = await User.findOne({ username });
-    if (user) {
-      return res.status(400).json({ error: "Username already exists" });
+    // Check if email already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ error: "Email already registered" });
     }
-    //Hash password here
+
+    // Hash password
     const hashPassword = await bcrypt.hash(password, 10);
 
-    //https://avatar-placeholder.iran.liara.run
-    const boyProfilePic = `https://avatar.iran.liara.run/public/boy?username=${username}`;
-    const girlProfilePic = `https://avatar.iran.liara.run/public/girl?username=${username}`;
-
+    // Create new user
     const newUser = await User.create({
-      fullName,
-      username,
+      name,
+      email,
       password: hashPassword,
-      gender,
-      profilePic: gender === "male" ? boyProfilePic : girlProfilePic
-    })
+      genres,
+    });
 
     if (newUser) {
+      // Generate token & set cookie
       const token = generateTokenAndSetCookie(newUser._id, res);
       res.status(201).json({
         _id: newUser._id,
-        fullName: newUser.fullName,
-        username: newUser.username,
-        profilePic: newUser.profilePic,
-        token
+        name: newUser.name,
+        email: newUser.email,
+        genres: newUser.genres,
+        token,
       });
     } else {
       res.status(400).json({ error: "Invalid user data" });
@@ -47,41 +51,48 @@ export const signUp = async (req, res) => {
     console.log("Error in signup controller", error.message);
     res.status(500).json({ error: "Internal Server Error" });
   }
-}
+};
 
 export const loginUser = async (req, res) => {
   try {
-    const { username, password } = req.body;
-    const user = await User.findOne({ username });
-    const isPasswordCorrect = await bcrypt.compare(password, user?.password || "");
+    const { email, password } = req.body;
 
-    if (!user || !isPasswordCorrect) {
-      return res.status(400).json({ error: "Invalid username or password" });
+    // Validate input fields
+    if (!email || !password) {
+      return res.status(400).json({ error: "Please enter email and password" });
     }
 
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ error: "Invalid email or password" });
+    }
 
+    // Compare passwords
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    if (!isPasswordCorrect) {
+      return res.status(400).json({ error: "Invalid email or password" });
+    }
+
+    // Generate token & set cookie
     const token = generateTokenAndSetCookie(user._id, res);
 
     res.status(200).json({
       _id: user._id,
-      fullName: user.fullName,
-      username: user.username,
-      profilePic: user.profilePic,
-      token
+      email: user.email,
+      genres: user.genres,
+      token,
     });
-
   } catch (error) {
     console.log("Error in login controller", error.message);
     res.status(500).json({ error: "Internal Server Error" });
   }
-}
- 
+};
+
 export const logoutUser = (req, res) => {
   try {
-
-    res.status(200).json({message: "Logged out successfully"});
+    res.status(200).json({ message: "Logged out successfully" });
   } catch (error) {
     console.log("Error in logout controller", error.message);
     res.status(500).json({ error: "Internal Server Error" });
   }
-}
+};
