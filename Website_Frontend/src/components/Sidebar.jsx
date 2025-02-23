@@ -5,6 +5,8 @@ import ExploreIcon from '@mui/icons-material/Explore';
 import PeopleIcon from '@mui/icons-material/People';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import { motion } from "framer-motion";
+import { FaMicrophoneAlt } from "react-icons/fa";
+
 
 
 const sidebarVariants = {
@@ -32,7 +34,7 @@ export default function Sidebar() {
             }`}
           >
             <Home className={`${location.pathname === "/" ? "text-orange-500" : ""}`} />
-            <span>Home</span>
+            <span>Dashboard</span>
           </Link>
         </li>
 
@@ -59,6 +61,18 @@ export default function Sidebar() {
           >
             <Headphones className={`${location.pathname === "/generate-audio" ? "text-orange-500" : ""}`} />
             <span>Generate Audio</span>
+          </Link>
+        </li>
+        <li>
+          <Link
+            to="/upload-podcast"
+            className={`flex items-center gap-3 p-3 rounded transition-all duration-300 ${
+              location.pathname === "/upload-podcast" ? "bg-gray-200 text-orange-500" : "hover:bg-gray-100"
+            }`}
+          >
+
+            <FaMicrophoneAlt className={`${location.pathname === "/upload-podcast" ? "text-orange-500" : ""}`} />
+            <span>Upload Podcast</span>
           </Link>
         </li>
         <li>

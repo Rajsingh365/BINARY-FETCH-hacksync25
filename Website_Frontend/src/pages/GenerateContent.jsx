@@ -16,7 +16,7 @@ export default function GenerateContent() {
   const [copiedScript, setCopiedScript] = useState(false); // Track if script is copied
   const [copiedTags, setCopiedTags] = useState(false); // Track if tags are copied
 
-  const {setTextScript, setTags } = useScriptContext()
+  const {setTextScript, setTags ,setTitle} = useScriptContext()
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -34,6 +34,7 @@ export default function GenerateContent() {
     formDataToSend.append("title", formData.title);
     formDataToSend.append("summary", formData.summary);
     formDataToSend.append("instructions", formData.instructions);
+    setTitle(formData.title);
 
     // Log FormData content (for debugging)
     for (let [key, value] of formDataToSend.entries()) {

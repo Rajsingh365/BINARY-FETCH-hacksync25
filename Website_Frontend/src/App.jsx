@@ -15,6 +15,8 @@ import Dashboard from "./pages/Dashboard";
 import Webinar from "./pages/Webinar";
 import Tutorials from "./pages/Tutuorials";
 import Community from "./pages/Community";
+import AudioLoader from "./components/AudioLoader";
+import { UploadPodcast } from "./pages/UploadPodcast";
 import PodcasterHub from "./pages/PodcasterHub";
 import OtherPodcastersProfile from "./pages/OtherPodcastersProfile";
 
@@ -30,6 +32,7 @@ function App() {
               <Route path="/contact" element={<ContactUs />} />
               <Route path="/generate-content" element={<GenerateContent />} />
               <Route path="/generate-audio" element={<GenerateAudio />} />
+              <Route path="/upload-podcast" element={<UploadPodcast />} />
               <Route path="/webinars" element={<Webinar />} />
               <Route path="/tutorials" element={<Tutorials />} />
               <Route path="/community" element={<Community />} />
@@ -39,6 +42,7 @@ function App() {
               {/* <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/profile" element={<Profile />} /> */}
+              <Route path="/profile" element={<Profile />} />
             </Route>
               <Route path="/signup" element={<Signup />} />
               <Route path="/login" element={<Login />} />

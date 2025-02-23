@@ -23,10 +23,13 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const __dirname = path.resolve();
 
+
 app.use(express.json());
 app.use(express.static("output"));
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
+
+// app.use(fileUpload());
 app.use(
   fileUpload({
     useTempFiles: true,
