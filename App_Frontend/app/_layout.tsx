@@ -27,6 +27,12 @@ export default function RootLayout() {
                 headerTitle: "",
               }}
             />
+            <Stack.Screen
+              name="(onboarding)"
+              options={{
+                headerShown: false,
+              }}
+            />
           </Stack>
         </GestureHandlerRootView>
       </AudioProvider>
