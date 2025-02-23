@@ -1,9 +1,11 @@
 import { AudioProvider } from "@/context/AudioContext";
+import { GlobalProvider } from "@/context/GlobalProvider";
 import { Stack } from "expo-router";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 export default function RootLayout() {
   return (
+    <GlobalProvider>
     <AudioProvider>
     <GestureHandlerRootView>
       <Stack
@@ -28,5 +30,6 @@ export default function RootLayout() {
       </Stack>
     </GestureHandlerRootView>
      </AudioProvider>
+     </GlobalProvider>
   );
 }

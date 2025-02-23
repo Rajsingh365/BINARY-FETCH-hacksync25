@@ -5,12 +5,14 @@ import React, {
   useMemo,
   useCallback,
 } from "react";
-import { View, Text, StyleSheet, Image, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from "react-native";
 import BottomSheet, { BottomSheetView } from "@gorhom/bottom-sheet";
 import { Podcast, Podcasts } from "@/data/dummy";
 import { useAudio } from "@/context/AudioContext";
 import { Ionicons } from "@expo/vector-icons";
 import Slider from "@react-native-community/slider";
+import { useGlobal } from "@/context/GlobalProvider";
+import { useDownload } from "@/hooks/useDownload";
 
 export const BottomDrawer = ({
   onClose,
@@ -20,19 +22,20 @@ export const BottomDrawer = ({
   playpodcast: Podcast | null;
 }) => {
   const bottomSheetRef = useRef<BottomSheet>(null);
-  const {
-    isPlaying,
-    playAudio,
-    togglePlayPause,
-    stopAudio,
-    positionMillis,
-    durationMillis,
-  } = useAudio();
+  const {isPlaying,playAudio,togglePlayPause,stopAudio,positionMillis,durationMillis} = useAudio();
   const snapPoints = useMemo(() => ["18%", "99%"], []);
   const [isExpanded, setIsExpanded] = useState(false);
-  const [currentPodcast, setCurrentPodcast] = useState<Podcast | null>(
-    playpodcast
-  );
+  const [currentPodcast, setCurrentPodcast] = useState<Podcast | null>(playpodcast);
+  const { liked,setLiked, downloaded,setDownloaded } = useGlobal();
+  const { downloadPodcast } = useDownload()
+
+  const isLiked = currentPodcast
+  ? liked.some((pod) => pod.title === currentPodcast.title)
+  : false;
+
+  const isdownload = currentPodcast
+  ? downloaded.some((pod) => pod.title === currentPodcast.title)
+  : false;
 
   useEffect(() => {
     setCurrentPodcast(playpodcast);
@@ -70,6 +73,32 @@ export const BottomDrawer = ({
     let prevIndex = (currentIndex - 1 + Podcasts.length) % Podcasts.length;
     setCurrentPodcast(Podcasts[prevIndex]);
   };
+
+  const toggleLike = () => {
+    if (currentPodcast) { 
+      const isCurrentlyLiked = liked.some((pod) => pod.title === currentPodcast.title);
+  
+      if (!isCurrentlyLiked) {
+        setLiked([...liked, currentPodcast]);
+      } else {
+        setLiked(liked.filter((pod) => pod.title !== currentPodcast.title));
+      }
+    }
+  };
+  
+
+  const Download = () => {
+    if (currentPodcast) {
+      const isCurrentlyDownloaded = downloaded.some((pod) => pod.title === currentPodcast.title);
+      if (!isCurrentlyDownloaded) {
+        setDownloaded([...downloaded, currentPodcast]);
+        downloadPodcast(currentPodcast);
+      } else {
+        Alert.alert("Downloaded");
+      }
+    }
+  };  
+  
 
   return (
     <BottomSheet
@@ -116,11 +145,19 @@ export const BottomDrawer = ({
             </View>
             {isExpanded && (
               <View style={{ display: "flex", flexDirection: "row", gap: 17, marginTop: 40 }}>
-                <TouchableOpacity style={{ marginTop: 3 }}>
-                  <Ionicons name="heart-outline" size={30} color="#1DB954" />
+                <TouchableOpacity onPress={toggleLike} style={{ marginTop: 3 }}>
+                  <Ionicons 
+                  name={isLiked ? "heart" : "heart-outline"}
+                  size={30} 
+                  color={isLiked ? "red" : "#1DB954"} 
+                  />
                 </TouchableOpacity>
-                <TouchableOpacity>
-                  <Ionicons name="download-outline" size={30} color="#1DB954" />  
+                <TouchableOpacity onPress={Download}>
+                  <Ionicons
+                  name={isdownload ? "download" : "download-outline"} 
+                  size={30} 
+                  color={isdownload ? "blue" : "#1DB954"} 
+                  />  
                 </TouchableOpacity>
               </View>
 
