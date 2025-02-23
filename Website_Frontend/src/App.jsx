@@ -12,6 +12,9 @@ import GenerateAudio from "./pages/GenerateAudio";
 import GenerateContent from "./pages/GenerateContent";
 import {ScriptContextProvider } from "./context/ScriptContext";
 import Dashboard from "./pages/Dashboard";
+import Webinar from "./pages/Webinar";
+import Tutorials from "./pages/Tutuorials";
+import Community from "./pages/Community";
 
 function App() {
   return (
@@ -25,6 +28,10 @@ function App() {
               <Route path="/contact" element={<ContactUs />} />
               <Route path="/generate-content" element={<GenerateContent />} />
               <Route path="/generate-audio" element={<GenerateAudio />} />
+              <Route path="/webinars" element={<Webinar />} />
+              <Route path="/tutorials" element={<Tutorials />} />
+              <Route path="/community" element={<Community />} />
+
               {/* <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
           <Route path="/profile" element={<Profile />} /> */}
