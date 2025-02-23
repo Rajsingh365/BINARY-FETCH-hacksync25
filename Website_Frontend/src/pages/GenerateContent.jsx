@@ -1,71 +1,81 @@
-import { useState, useEffect } from "react";
-import { motion } from "framer-motion";
-import { useScriptContext } from "../context/ScriptContext";
-import { Link } from "react-router-dom";
-import { Edit, ContentCopy, AudioFile } from "@mui/icons-material";
+import { useState } from "react";
 
 export default function GenerateContent() {
-  const [formData, setFormData] = useState({ title: "", description: "", instruction: "" });
-  const [apiResponse, setApiResponse] = useState("");
-  const { textScript, setTextScript } = useScriptContext();
-  const [isEditing, setIsEditing] = useState(false);
-  const [errors, setErrors] = useState({ title: "", description: "", instruction: "" });
+  const [formData, setFormData] = useState({
+    title: "",
+    summary: "",
+    instructions: "",
+  });
 
-  const validateFields = () => {
-    let newErrors = { title: "", description: "", instruction: "" };
-    let isValid = true;
+  const [apiResponse, setApiResponse] = useState(null); // Store the API response
+  const [editableScript, setEditableScript] = useState(""); // Store editable script
+  const [editableTags, setEditableTags] = useState(""); // Store editable tags
+  const [copiedScript, setCopiedScript] = useState(false); // Track if script is copied
+  const [copiedTags, setCopiedTags] = useState(false); // Track if tags are copied
 
-    if (!formData.title.trim()) {
-      newErrors.title = "Title is required.";
-      isValid = false;
-    }
-    if (!formData.description.trim()) {
-      newErrors.description = "Description is required.";
-      isValid = false;
-    }
-    if (!formData.instruction.trim()) {
-      newErrors.instruction = "Instruction is required.";
-      isValid = false;
-    }
-
-    setErrors(newErrors);
-    return isValid;
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!validateFields()) return;
+    // Log the collected inputs
+    console.log("Collected Inputs:", formData);
 
-    const combinedContent = `Title: ${formData.title}\n\nDescription: ${formData.description}\n\nInstruction: ${formData.instruction}`;
-    setTextScript(combinedContent);
-  };
+    // Create FormData object
+    const formDataToSend = new FormData();
+    formDataToSend.append("title", formData.title);
+    formDataToSend.append("summary", formData.summary);
+    formDataToSend.append("instructions", formData.instructions);
 
-  // Update `apiResponse` when `textScript` changes
-  useEffect(() => {
-    if (textScript) {
-      setApiResponse(textScript);
+    // Log FormData content (for debugging)
+    for (let [key, value] of formDataToSend.entries()) {
+      console.log(key, value);
     }
-  }, [textScript]);
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+    // Send FormData to the backend
+    try {
+      const response = await fetch("http://localhost:5000/generate/script", {
+        method: "POST",
+        body: formDataToSend,
+      });
 
-    // Clear the error message when user starts typing
-    setErrors((prev) => ({ ...prev, [name]: "" }));
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+
+      const result = await response.json();
+      console.log("Backend Response:", result);
+
+      // Set the API response
+      setApiResponse(result);
+
+      // Set editable fields with the initial response
+      setEditableScript(JSON.stringify(result.content, null, 2)); // Pretty-print JSON
+      setEditableTags(result.tags.join(", ")); // Convert tags array to a string
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
   };
 
-  const fadeInUp = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.4 },
+  const handleCopyScript = () => {
+    navigator.clipboard.writeText(editableScript);
+    setCopiedScript(true);
+    setTimeout(() => setCopiedScript(false), 2000); // Reset copied state after 2 seconds
+  };
+
+  const handleCopyTags = () => {
+    navigator.clipboard.writeText(editableTags);
+    setCopiedTags(true);
+    setTimeout(() => setCopiedTags(false), 2000); // Reset copied state after 2 seconds
   };
 
   return (
     <div className="flex flex-col gap-6 p-6 max-w-2xl mx-auto bg-white text-black rounded-lg shadow-lg">
-      <h1>Generate Script For Podcast</h1>
-      <motion.form onSubmit={handleSubmit} className="space-y-6" {...fadeInUp}>
+      <h1 className="text-4xl font-bold">Generate Script For Podcast</h1>
+      <form onSubmit={handleSubmit} className="space-y-6">
         <div>
           <input
             type="text"
@@ -73,138 +83,75 @@ export default function GenerateContent() {
             placeholder="Enter title"
             value={formData.title}
             onChange={handleInputChange}
-            className={`w-full p-3 bg-white border ${errors.title ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
+            className="w-full p-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          {errors.title && <p className="text-red-500 text-sm mt-1">{errors.title}</p>}
         </div>
 
         <div>
           <textarea
-            name="description"
-            placeholder="Enter description"
+            name="summary"
+            placeholder="Enter summary"
             rows="3"
-            value={formData.description}
+            value={formData.summary}
             onChange={handleInputChange}
-            className={`w-full p-3 bg-white border ${errors.description ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
+            className="w-full p-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          {errors.description && <p className="text-red-500 text-sm mt-1">{errors.description}</p>}
         </div>
 
         <div>
           <textarea
-            name="instruction"
-            placeholder="Enter instruction"
+            name="instructions"
+            placeholder="Enter instructions"
             rows="3"
-            value={formData.instruction}
+            value={formData.instructions}
             onChange={handleInputChange}
-            className={`w-full p-3 bg-white border ${errors.instruction ? "border-red-500" : "border-gray-300"} rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500`}
+            className="w-full p-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
-          {errors.instruction && <p className="text-red-500 text-sm mt-1">{errors.instruction}</p>}
         </div>
 
-        <motion.div whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
-          <button
-            type="submit"
-            disabled={!formData.title.trim() || !formData.description.trim() || !formData.instruction.trim()}
-            className={`w-full font-semibold py-3 rounded-lg transition-all ${
-              !formData.title.trim() || !formData.description.trim() || !formData.instruction.trim()
-                ? "bg-gray-400 cursor-not-allowed"
-                : "bg-purple-600 hover:bg-purple-700 text-white"
-            }`}
-          >
-            Generate Content
-          </button>
-        </motion.div>
-      </motion.form>
+        <button
+          type="submit"
+          className="w-full font-semibold py-3 rounded-lg bg-purple-600 hover:bg-purple-700 text-white transition-all"
+        >
+          Generate Content
+        </button>
+      </form>
 
       {apiResponse && (
-        <GeneratedScript
-          text={apiResponse}
-          setTextScript={setTextScript}
-          isEditing={isEditing}
-          setIsEditing={setIsEditing}
-        />
+        <div className="mt-6">
+          <h2 className="text-xl font-semibold mb-4">Generated Script</h2>
+          <div className="bg-gray-100 p-4 rounded-lg">
+            <textarea
+              value={editableScript}
+              onChange={(e) => setEditableScript(e.target.value)}
+              rows="10"
+              className="w-full p-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              onClick={handleCopyScript}
+              className="mt-2 bg-slate-400 text-white px-4 py-2 rounded-lg hover:bg-slate-700 transition-all"
+            >
+              {copiedScript ? "Copied!" : "Copy Script"}
+            </button>
+          </div>
+
+          <h2 className="text-xl font-semibold mt-6 mb-4">Generated Tags</h2>
+          <div className="bg-gray-100 p-4 rounded-lg">
+            <input
+              type="text"
+              value={editableTags}
+              onChange={(e) => setEditableTags(e.target.value)}
+              className="w-full p-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+            <button
+              onClick={handleCopyTags}
+              className="mt-2 bg-slate-400 text-white px-4 py-2 rounded-lg hover:bg-slate-700 transition-all"
+            >
+              {copiedTags ? "Copied!" : "Copy Tags"}
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );
 }
-
-const GeneratedScript = ({ text, setTextScript, isEditing, setIsEditing }) => {
-  const [copied, setCopied] = useState(false);
-  const [editableText, setEditableText] = useState(text);
-
-  useEffect(() => {
-    setEditableText(text);
-  }, [text]);
-
-  const fadeInUp = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.4 },
-  };
-
-  const handleCopy = () => {
-    navigator.clipboard.writeText(editableText);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
-
-  const handleSave = () => {
-    setTextScript(editableText);
-    setIsEditing(false);
-  };
-
-  return (
-    <motion.div
-      initial={fadeInUp.initial}
-      animate={fadeInUp.animate}
-      transition={{ ...fadeInUp.transition, delay: 0.2 }}
-      className="bg-white text-black rounded-lg shadow-lg p-6"
-    >
-      <h3 className="text-xl font-semibold mb-4">Generated Content</h3>
-
-      {isEditing ? (
-        <textarea
-          value={editableText}
-          onChange={(e) => setEditableText(e.target.value)}
-          rows="6"
-          className="w-full p-3 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-        />
-      ) : (
-        <p className="text-gray-700 whitespace-pre-wrap">{editableText}</p>
-      )}
-
-      <div className="flex justify-end gap-2 mt-4">
-        {isEditing ? (
-          <button
-            onClick={handleSave}
-            className="bg-green-600 text-white px-4 py-2 rounded-lg hover:bg-green-700 transition-all"
-          >
-            Save
-          </button>
-        ) : (
-          <button
-            onClick={() => setIsEditing(true)}
-            className="bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-all flex items-center gap-1"
-          >
-            <Edit /> Edit
-          </button>
-        )}
-
-        <button
-          onClick={handleCopy}
-          className="bg-gray-700 text-white px-4 py-2 rounded-lg hover:bg-gray-600 transition-all flex items-center gap-1"
-        >
-          {copied ? "Copied!" : <ContentCopy />}
-        </button>
-
-        <Link
-          to="/generate-audio"
-          className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg transition-all flex items-center gap-1"
-        >
-          <AudioFile /> Generate Audio
-        </Link>
-      </div>
-    </motion.div>
-  );
-};

@@ -1,9 +1,9 @@
-import Podcast from "../models/podcast.model";
+import Podcast from "../models/podcast.model.js";
 import { StatusCodes } from "http-status-codes";
 
 export const getAllPodcasts = async (req, res) => {
   try {
-    const podcasts = await Podcast.find({ creator: req.user.userId })
+    const podcasts = await Podcast.find({ creator: req.user.userId })  
       .sort("-createdAt")
       .populate("creator", "name email");
 
