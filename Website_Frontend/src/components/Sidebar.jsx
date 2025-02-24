@@ -86,7 +86,7 @@ export default function Sidebar() {
           >
 
             <RiFolderHistoryLine className={`${location.pathname === "/your-podcasts" ? "text-orange-500" : ""}`} />
-            <span>Your Podcats</span>
+            <span>Your Podcast</span>
           </Link>
         </li>
         <li>

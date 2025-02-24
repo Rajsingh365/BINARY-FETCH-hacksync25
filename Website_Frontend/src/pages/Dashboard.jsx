@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { FiMic, FiUsers, FiEye, FiHeart, FiClock, FiTrendingUp, FiDollarSign } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { PieChart, Pie, Cell, Tooltip, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, ResponsiveContainer } from "recharts";
@@ -14,7 +14,7 @@ const Dashboard = () => {
   console.log('authToken', authToken);
 
   // Dummy Data for Charts
-  const [monthlyPodcasts] = useState([
+  const [monthlyPodcasts, setMonthlyPodcasts] = useState([
     { month: "Jan", value: 120 },
     { month: "Feb", value: 180 },
     { month: "Mar", value: 220 },
@@ -23,12 +23,12 @@ const Dashboard = () => {
     { month: "Jun", value: 320 },
   ]);
 
-  const [voiceUsage] = useState([
+  const [voiceUsage, setVoiceUsage] = useState([
     { name: "Male AI", value: 40 },
     { name: "Female AI", value: 60 },
   ]);
 
-  const [viewsGrowth] = useState([
+  const [viewsGrowth, setViewsGrowth] = useState([
     { month: "Jan", views: 20000 },
     { month: "Feb", views: 35000 },
     { month: "Mar", views: 50000 },
@@ -118,33 +118,6 @@ const Dashboard = () => {
               <Tooltip />
               <Line type="monotone" dataKey="views" stroke="#10B981" strokeWidth={2} />
             </LineChart>
-          </ResponsiveContainer>
-        </ChartContainer>
-
-        {/* Pie Chart - Podcast Category Distribution */}
-        <ChartContainer title="Podcast Category Distribution">
-          <PieChart width={400} height={300}>
-            <Pie data={categoryDistribution} cx="50%" cy="50%" outerRadius={80} dataKey="value" label>
-              {categoryDistribution.map((entry, index) => (
-                <Cell key={`cell-${index}`} fill={["#3B82F6", "#F59E0B", "#10B981", "#EF4444", "#6366F1"][index]} />
-              ))}
-            </Pie>
-            <Tooltip />
-            <Legend />
-          </PieChart>
-        </ChartContainer>
-
-        {/* Bar Chart - Engagement Trends */}
-        <ChartContainer title="Likes & Views Over Time">
-          <ResponsiveContainer width="100%" height={300}>
-            <BarChart data={engagementTrends}>
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" />
-              <YAxis />
-              <Tooltip />
-              <Bar dataKey="likes" fill="#EF4444" name="Likes" />
-              <Bar dataKey="views" fill="#3B82F6" name="Views" />
-            </BarChart>
           </ResponsiveContainer>
         </ChartContainer>
 
