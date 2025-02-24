@@ -85,17 +85,37 @@ export const BottomDrawer = ({
     }
   };
 
-  const Download = () => {
-    if (currentPodcast) {
-      const isCurrentlyDownloaded = downloaded.some((pod) => pod.title === currentPodcast.title);
-      if (!isCurrentlyDownloaded) {
-        setDownloaded([...downloaded, currentPodcast]);
-        downloadPodcast(currentPodcast);
-      } else {
-        Alert.alert("Downloaded");
-      }
+  const Download = async () => {
+    if (!currentPodcast) {
+      Alert.alert("Error", "No podcast selected for download.");
+      return;
+    }
+  
+    const isCurrentlyDownloaded = downloaded.some((pod) => pod._id === currentPodcast._id);
+  
+    if (isCurrentlyDownloaded) {
+      Alert.alert("Already Downloaded", "This podcast is already in your downloads.");
+      return;
+    }
+  
+    try {
+      // Update the state first to reflect UI changes
+      setDownloaded((prev) => [...prev, currentPodcast]);
+  
+      // Use an async function inside setTimeout to avoid blocking UI
+      setTimeout(async () => {
+        await downloadPodcast(currentPodcast);
+      }, 100);
+  
+      Alert.alert("Download Started", "Your podcast is downloading in the background.");
+    } catch (error) {
+      console.error("Download failed:", error);
+      Alert.alert("Download Failed", "Something went wrong while downloading.");
     }
   };
+  
+  
+  
 
   const truncate = () => {
     if (currentPodcast && currentPodcast?.title.length > 10) {
