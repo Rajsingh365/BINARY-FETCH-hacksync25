@@ -1,22 +1,15 @@
-// import { Podcast } from "@/data/dummy";
 import { Podcast } from "@/context/GlobalProvider";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 
-
 export default function PodcastCard({
   episode,
-  // onOpen,
-  // onSelected,
 }: {
   episode: Podcast;
-  // onOpen: () => void;
-  // onSelected: () => void;
 }) {
   return (
     <TouchableOpacity
       onPress={() => {
-        console.log("Pressed inside like");        // onOpen();
-        // onSelected();
+        console.log("Pressed inside like");
       }}
     >
       <View style={styles.podcast_cardcontainer}>
@@ -26,10 +19,10 @@ export default function PodcastCard({
         />
         <View style={styles.card_textcontainer}>
           <Text numberOfLines={1} style={styles.cardtext}>
-            {episode.title}
+            {episode.title || "Untitled Podcast"} {/* Fallback for undefined title */}
           </Text>
-          <Text numberOfLines={1} style={styles.cardtext}>
-            {episode.creator.name}
+          <Text numberOfLines={1} style={styles.cardSubtext}>
+            {episode.creator.name || "Unknown Creator"} {/* Fallback for undefined creator */}
           </Text>
         </View>
       </View>
@@ -37,27 +30,39 @@ export default function PodcastCard({
   );
 }
 
-
-
 const styles = StyleSheet.create({
   podcast_cardcontainer: {
     flexDirection: "row",
-    padding: 20,
+    padding: 16,
     borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
+    borderBottomColor: "#E0D7F5", // Softened border color
     alignItems: "center",
-    width: 310,
+    backgroundColor: "#FFFBF5", // Card background color
+    borderRadius: 12,
+    marginVertical: 8,
+    shadowColor: "#C3ACD0", // Shadow color
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   card_textcontainer: {
-    marginLeft: 20,
-    gap: 2,
+    marginLeft: 16,
+    gap: 4,
+    flex: 1,
   },
   cardtext: {
-    fontSize: 15,
+    fontSize: 16,
+    fontWeight: "600",
+    color: "#7743DB", // Title color
+  },
+  cardSubtext: {
+    fontSize: 14,
+    color: "#C3ACD0", // Subtitle color
   },
   thumbnailImg: {
     width: 60,
     height: 60,
-    borderRadius: 5,
+    borderRadius: 8,
   },
 });

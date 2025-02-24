@@ -12,79 +12,74 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { router } from 'expo-router';
+import { useGlobal } from "@/context/GlobalProvider";
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { authuser, setAuthuser } = useGlobal();
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!email || !password) {
       Alert.alert('Error', 'Please fill in all fields.');
       return;
     }
 
-    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       Alert.alert('Error', 'Please enter a valid email address.');
       return;
     }
 
-    // Log the form data (you can send it to a server instead)
-    console.log({
-      email,
-      password,
+    const res = await fetch(`${process.env.EXPO_PUBLIC_BACKEND_URI}/api/listener/login`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
     });
+    const data = await res.json();
+    setAuthuser(data);
     router.push('/home');
-
-    Alert.alert('Success', 'Login successful!');
-    // Reset the form
-    setEmail('');
-    setPassword('');
   };
 
   return (
     <>
-      {/* Status Bar */}
-      <StatusBar
-        barStyle="dark-content" 
-        backgroundColor="#FBFFE4" 
-        translucent={false} 
-      />
+      <StatusBar barStyle="dark-content" backgroundColor="#FFFBF5" translucent={false} />
 
-      {/* SafeAreaView and Gradient Background */}
       <SafeAreaView style={{ flex: 1 }}>
         <LinearGradient
-          colors={['#FBFFE4', '#B3D8A8', '#A3D1C6']} // Your color palette
+          colors={['#FFFBF5', '#F7EFE5', '#C3ACD0']}
           style={styles.container}
         >
           <ScrollView contentContainerStyle={styles.scrollContainer}>
             <Text style={styles.title}>Login</Text>
 
-            {/* Email Input */}
             <TextInput
               style={styles.input}
               placeholder="Email"
+              placeholderTextColor="#C3ACD0"
               value={email}
               onChangeText={setEmail}
               keyboardType="email-address"
             />
 
-            {/* Password Input */}
             <TextInput
               style={styles.input}
               placeholder="Password"
+              placeholderTextColor="#C3ACD0"
               value={password}
               onChangeText={setPassword}
               secureTextEntry
             />
 
-            {/* Login Button */}
             <TouchableOpacity style={styles.button} onPress={handleLogin}>
               <Text style={styles.buttonText}>Login</Text>
             </TouchableOpacity>
 
-            {/* Sign-Up Link */}
             <View style={styles.signupLinkContainer}>
               <Text style={styles.signupText}>Don't have an account?</Text>
               <TouchableOpacity onPress={() => router.push('/')}>
@@ -111,22 +106,23 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#3D8D7A', // Dark teal for the title
+    color: '#7743DB', // Title with primary purple
     marginBottom: 30,
   },
   input: {
     width: '100%',
     height: 50,
-    borderColor: '#B3D8A8', // Light green border
+    borderColor: '#C3ACD0', // Light purple border
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 15,
     marginBottom: 20,
-    backgroundColor: '#FBFFE4', // Light cream background
+    backgroundColor: '#FFFBF5', // Light cream background
+    color: '#7743DB', // Input text color
   },
   button: {
     width: '100%',
-    backgroundColor: '#3D8D7A', // Dark teal for the button
+    backgroundColor: '#7743DB', // Deep purple button
     paddingVertical: 15,
     borderRadius: 8,
     alignItems: 'center',
@@ -135,7 +131,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#FBFFE4', // Light cream text on the button
+    color: '#FFFBF5', // Light text on button
   },
   signupLinkContainer: {
     flexDirection: 'row',
@@ -143,12 +139,12 @@ const styles = StyleSheet.create({
   },
   signupText: {
     fontSize: 16,
-    color: '#3D8D7A', // Dark teal for text
+    color: '#7743DB', // Primary purple for text
   },
   signupButton: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#3D8D7A', // Dark teal for the sign-up link
+    color: '#C3ACD0', // Light purple for the link
     marginLeft: 5,
   },
 });

@@ -66,16 +66,13 @@ export const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
           },
         });
   
-        console.log("Response Status:", response.status);
   
         // Check if response is OK and has content
         if (response.ok) {
           const text = await response.text(); // Read as text first
-          console.log("Raw Response:", text);
   
           if (text) {
             const data: GetPodcastsResponse = JSON.parse(text); // Parse only if not empty
-            console.log("Parsed Data:", data);
             setAllPodcast(data.podcasts);
           } else {
             console.log("Empty response body");

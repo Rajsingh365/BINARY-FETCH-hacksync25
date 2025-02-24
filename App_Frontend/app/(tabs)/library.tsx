@@ -8,7 +8,7 @@ const CARD_SIZE = (width - 48) / 2; // Adjusted for side-by-side layout
 
 export default function Library() {
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: "#F9F9F9" }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFBF5" }}>
       <View style={styles.container}>
         {/* Favorites Box */}
         <View style={styles.cardWrapper}>
@@ -16,7 +16,9 @@ export default function Library() {
             style={styles.squareCard}
             onPress={() => router.push("/liked")}
           >
-            <AntDesign name="hearto" size={50} color="#FF6B6B" />
+            <Text>
+            <AntDesign name="hearto" size={50} color="#7743DB" />
+            </Text> 
           </TouchableOpacity>
           <Text style={styles.cardTitle}>Liked Podcasts</Text>
         </View>
@@ -27,11 +29,13 @@ export default function Library() {
             style={styles.squareCard}
             onPress={() => router.push("/offline")}
           >
+            <Text>
             <MaterialCommunityIcons
               name="cloud-download-outline"
               size={50}
-              color="#4D96FF"
+              color="#7743DB" // Updated icon color
             />
+            </Text>
           </TouchableOpacity>
           <Text style={styles.cardTitle}>Offline Podcasts</Text>
         </View>
@@ -54,11 +58,11 @@ const styles = StyleSheet.create({
   squareCard: {
     width: CARD_SIZE,
     height: CARD_SIZE,
-    backgroundColor: "#FFFFFF",
+    backgroundColor: "#F7EFE5", // Updated card background color
     borderRadius: 16,
     alignItems: "center",
     justifyContent: "center",
-    shadowColor: "#000",
+    shadowColor: "#C3ACD0", // Updated shadow color
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.1,
     shadowRadius: 5,
@@ -68,6 +72,6 @@ const styles = StyleSheet.create({
     marginTop: 8,
     fontSize: 16,
     fontWeight: "600",
-    color: "#333333",
+    color: "#7743DB", // Updated text color
   },
 });

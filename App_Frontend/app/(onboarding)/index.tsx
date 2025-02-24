@@ -18,32 +18,23 @@ const index = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [preferences, setPreferences] = useState('');
-  const {authuser, setAuthuser} = useGlobal();
+  const { authuser, setAuthuser } = useGlobal();
 
-
-  const handleSignUp = async() => {
+  const handleSignUp = async () => {
     if (!name || !email || !password || !preferences) {
       Alert.alert('Error', 'Please fill in all fields.');
       return;
     }
 
-    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       Alert.alert('Error', 'Please enter a valid email address.');
       return;
     }
 
-    // Split preferences into an array
-    const preferencesArray = (preferences || '').split(',').map((pref) => pref.trim());
+    const preferencesArray = preferences.split(',').map(pref => pref.trim());
 
-    // Log the form data (you can send it to a server instead)
-    console.log({
-      name,
-      email,
-      password,
-      preferences: preferencesArray,
-    });
+    console.log({ name, email, password, preferences: preferencesArray });
 
     const res = await fetch(`${process.env.EXPO_PUBLIC_BACKEND_URI}/api/listener/signup`, {
       method: 'POST',
@@ -58,7 +49,6 @@ const index = () => {
       }),
     });
     const data = await res.json();
-    console.log("hello",data);
     setAuthuser(data);
     router.push('/home');
   };
@@ -67,55 +57,53 @@ const index = () => {
     <>
       <StatusBar barStyle="dark-content" backgroundColor="transparent" translucent />
       <LinearGradient
-        colors={['#FBFFE4', '#B3D8A8', '#A3D1C6']} // Your color palette
+        colors={['#FFFBF5', '#F7EFE5']}
         style={styles.container}
       >
         <ScrollView contentContainerStyle={styles.scrollContainer}>
           <Text style={styles.title}>Sign Up</Text>
 
-          {/* Name Input */}
           <TextInput
             style={styles.input}
             placeholder="Name"
             value={name}
             onChangeText={setName}
+            placeholderTextColor="#C3ACD0"
           />
 
-          {/* Email Input */}
           <TextInput
             style={styles.input}
             placeholder="Email"
             value={email}
             onChangeText={setEmail}
             keyboardType="email-address"
+            placeholderTextColor="#C3ACD0"
           />
 
-          {/* Password Input */}
           <TextInput
             style={styles.input}
             placeholder="Password"
             value={password}
             onChangeText={setPassword}
             secureTextEntry
+            placeholderTextColor="#C3ACD0"
           />
 
-          {/* Preferences Input */}
           <TextInput
             style={styles.input}
             placeholder="Preferences (comma-separated)"
             value={preferences}
             onChangeText={setPreferences}
+            placeholderTextColor="#C3ACD0"
           />
 
-          {/* Sign Up Button */}
           <TouchableOpacity style={styles.button} onPress={handleSignUp}>
             <Text style={styles.buttonText}>Sign Up</Text>
           </TouchableOpacity>
 
-          {/* Login Link */}
           <View style={styles.loginLinkContainer}>
             <Text style={styles.loginText}>Already have an account?</Text>
-            <TouchableOpacity onPress={() => router.push('/home')}>
+            <TouchableOpacity onPress={() => router.push('/login')}>
               <Text style={styles.loginButton}>Login</Text>
             </TouchableOpacity>
           </View>
@@ -138,22 +126,23 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#3D8D7A', // Dark teal for the title
+    color: '#7743DB',
     marginBottom: 30,
   },
   input: {
     width: '100%',
     height: 50,
-    borderColor: '#B3D8A8', // Light green border
+    borderColor: '#C3ACD0',
     borderWidth: 1,
     borderRadius: 8,
     paddingHorizontal: 15,
     marginBottom: 20,
-    backgroundColor: '#FBFFE4', // Light cream background
+    backgroundColor: '#F7EFE5',
+    color: '#7743DB',
   },
   button: {
     width: '100%',
-    backgroundColor: '#3D8D7A', // Dark teal for the button
+    backgroundColor: '#7743DB',
     paddingVertical: 15,
     borderRadius: 8,
     alignItems: 'center',
@@ -162,7 +151,7 @@ const styles = StyleSheet.create({
   buttonText: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: '#FBFFE4', // Light cream text on the button
+    color: '#FFFBF5',
   },
   loginLinkContainer: {
     flexDirection: 'row',
@@ -170,12 +159,12 @@ const styles = StyleSheet.create({
   },
   loginText: {
     fontSize: 16,
-    color: '#3D8D7A', // Dark teal for text
+    color: '#C3ACD0',
   },
   loginButton: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#3D8D7A', // Dark teal for the login link
+    color: '#7743DB',
     marginLeft: 5,
   },
 });

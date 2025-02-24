@@ -10,18 +10,16 @@ import {
   ScrollView,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-// import { Podcast, Podcasts } from "@/data/dummy";
-import { Podcast, useGlobal} from "@/context/GlobalProvider";
+import { Podcast, useGlobal } from "@/context/GlobalProvider";
 
 export default function Home() {
-  const { AllPodcast : Podcasts} = useGlobal();
+  const { AllPodcast: Podcasts } = useGlobal();
   const groupedPodcasts = makeGroups(Podcasts);
   const [openPlayer, setOpenPlayer] = useState(false);
   const [selectedPodcast, setSelectedPodcast] = useState<Podcast | null>(null);
-  console.log(Podcasts);
 
   return (
-    <SafeAreaView style={{ flex: 1 }}>
+    <SafeAreaView style={{ flex: 1, backgroundColor: "#FFFBF5" }}>
       <ScrollView style={{ flex: 1 }}>
         {/* Quick Picks */}
         <View style={{ height: 350 }}>
@@ -197,9 +195,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     padding: 20,
     borderBottomWidth: 1,
-    borderBottomColor: "#ccc",
+    borderBottomColor: "#C3ACD0",
     alignItems: "center",
     width: 310,
+    backgroundColor: "#F7EFE5",
+    borderRadius: 10,
+    marginVertical: 5,
   },
   card_textcontainer: {
     marginLeft: 20,
@@ -207,6 +208,7 @@ const styles = StyleSheet.create({
   },
   cardtext: {
     fontSize: 15,
+    color: "#7743DB",
   },
   thumbnailImg: {
     width: 60,
@@ -219,6 +221,8 @@ const styles = StyleSheet.create({
   headingtext: {
     fontSize: 20,
     padding: 4,
+    color: "#7743DB",
+    fontWeight: "bold",
   },
 
   creator_card: {
@@ -228,6 +232,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     marginRight: 10,
     position: "relative",
+    backgroundColor: "#F7EFE5",
   },
   creatorImg: {
     width: "100%",
@@ -238,17 +243,16 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     width: "100%",
-    backgroundColor: "rgba(0, 0, 0, 0.4)",
+    backgroundColor: "rgba(119, 67, 219, 0.7)",
     paddingVertical: 5,
     alignItems: "center",
   },
   creator_text: {
-    color: "#fff",
+    color: "#FFFBF5",
     fontWeight: "bold",
     fontSize: 14,
   },
 
-  // Creator's Special Card (Same as Top Creator Card)
   special_card: {
     width: 130,
     height: 130,
@@ -256,6 +260,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     marginRight: 10,
     position: "relative",
+    backgroundColor: "#F7EFE5",
   },
   specialImg: {
     width: "100%",
@@ -266,12 +271,12 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 0,
     width: "100%",
-    backgroundColor: "rgba(0, 0, 0, 0.4)",
+    backgroundColor: "rgba(119, 67, 219, 0.7)",
     paddingVertical: 5,
     alignItems: "center",
   },
   special_title: {
-    color: "#fff",
+    color: "#FFFBF5",
     fontWeight: "bold",
     fontSize: 14,
   },
