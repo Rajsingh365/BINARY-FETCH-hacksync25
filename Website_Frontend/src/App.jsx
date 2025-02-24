@@ -19,6 +19,7 @@ import AudioLoader from "./components/AudioLoader";
 import { UploadPodcast } from "./pages/UploadPodcast";
 import PodcasterHub from "./pages/PodcasterHub";
 import OtherPodcastersProfile from "./pages/OtherPodcastersProfile";
+import YourPodcasts from "./pages/YourPodcats";
 
 function App() {
   return (
@@ -38,6 +39,12 @@ function App() {
               <Route path="/community" element={<Community />} />
               <Route path="/podcaster-hub" element={<PodcasterHub />} />
               <Route path="/other-podcaster-hub/:user_id" element={<OtherPodcastersProfile />} />
+              <Route path="/your-podcasts" element={<YourPodcasts />} />
+
+
+              {/* <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/profile" element={<Profile />} /> */}
               <Route path="/profile" element={<Profile />} /> 
 
             </Route>

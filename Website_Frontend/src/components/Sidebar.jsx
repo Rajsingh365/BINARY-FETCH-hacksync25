@@ -6,6 +6,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import { motion } from "framer-motion";
 import { FaMicrophoneAlt } from "react-icons/fa";
+import { RiFolderHistoryLine } from "react-icons/ri";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 
@@ -74,6 +75,18 @@ export default function Sidebar() {
 
             <FaMicrophoneAlt className={`${location.pathname === "/upload-podcast" ? "text-orange-500" : ""}`} />
             <span>Upload Podcast</span>
+          </Link>
+        </li>
+        <li>
+          <Link
+            to="/your-podcasts"
+            className={`flex items-center gap-3 p-3 rounded transition-all duration-300 ${
+              location.pathname === "/your-podcasts" ? "bg-gray-200 text-orange-500" : "hover:bg-gray-100"
+            }`}
+          >
+
+            <RiFolderHistoryLine className={`${location.pathname === "/your-podcasts" ? "text-orange-500" : ""}`} />
+            <span>Your Podcats</span>
           </Link>
         </li>
         <li>
