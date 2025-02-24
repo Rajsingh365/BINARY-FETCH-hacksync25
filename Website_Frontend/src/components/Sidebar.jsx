@@ -6,6 +6,7 @@ import PeopleIcon from '@mui/icons-material/People';
 import CampaignIcon from '@mui/icons-material/Campaign';
 import { motion } from "framer-motion";
 import { FaMicrophoneAlt } from "react-icons/fa";
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 
 
@@ -117,6 +118,17 @@ export default function Sidebar() {
           >
             <PeopleIcon className={`${location.pathname === "/community" ? "text-orange-500" : ""}`} />
             <span>Community</span>
+          </Link>
+        </li>
+        <li>
+          <Link
+            to="/profile"
+            className={`flex items-center gap-3 p-3 rounded transition-all duration-300 ${
+              location.pathname === "/profile" ? "bg-gray-200 text-orange-500" : "hover:bg-gray-100"
+            }`}
+          >
+            <AccountCircleIcon className={`${location.pathname === "/profile" ? "text-orange-500" : ""}`} />
+            <span>Profile</span>
           </Link>
         </li>
       </ul>

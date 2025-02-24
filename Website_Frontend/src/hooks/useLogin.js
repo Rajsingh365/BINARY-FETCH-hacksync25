@@ -27,6 +27,7 @@ function useLogin() {
       }
 
       const { token, ...userData } = data;
+      console.log('userData', userData);
       localStorage.setItem("loggedin_user", JSON.stringify(userData));
       localStorage.setItem("Hacks25-jwt", JSON.stringify(token));
       setAuthUser(userData);

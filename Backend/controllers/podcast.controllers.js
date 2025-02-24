@@ -6,7 +6,7 @@ import { agenda } from "../agenda.js";
 export const getAllPodcasts = async (req, res) => {
   try {
     const podcasts = await Podcast.find({ creator: req.user.userId })  
-      .sort("-createdAt")
+      .sort("-views")
       .populate("creator", "name email");
 
     res.status(StatusCodes.OK).json({
@@ -106,3 +106,4 @@ export const getPodcastsByCreator = async (req, res) => {
 
   res.json({ count: podcasts.length, podcasts });
 };
+

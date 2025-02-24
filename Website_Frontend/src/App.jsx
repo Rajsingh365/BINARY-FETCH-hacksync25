@@ -5,7 +5,7 @@ import { ContactUs } from "./pages/ContactUs";
 import { AboutUs } from "./pages/AboutUs";
 import { Signup } from "./pages/Signup";
 import { Login } from "./pages/Login";
-import { Profile } from "./pages/Profile";
+import Profile from "./pages/Profile";
 import { Toaster } from "react-hot-toast";
 import { AuthContextProvider } from "./context/AuthContext";
 import GenerateAudio from "./pages/GenerateAudio";
@@ -38,11 +38,7 @@ function App() {
               <Route path="/community" element={<Community />} />
               <Route path="/podcaster-hub" element={<PodcasterHub />} />
               <Route path="/other-podcaster-hub/:user_id" element={<OtherPodcastersProfile />} />
-
-
-              {/* <Route path="/signup" element={<Signup />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/profile" element={<Profile />} /> */}
+              <Route path="/profile" element={<Profile />} /> 
 
             </Route>
               <Route path="/signup" element={<Signup />} />

@@ -2,8 +2,17 @@ import { useState, useEffect } from "react";
 import { FiMic, FiUsers, FiEye, FiHeart, FiClock, FiTrendingUp, FiDollarSign } from "react-icons/fi";
 import { motion } from "framer-motion";
 import { PieChart, Pie, Cell, Tooltip, Legend, BarChart, Bar, XAxis, YAxis, CartesianGrid, LineChart, Line, ResponsiveContainer } from "recharts";
+import { useAuthContext } from "../context/AuthContext";
 
 const Dashboard = () => {
+  const {authUser, authToken} = useAuthContext()
+  const [podcasts, setPodcasts] = useState([])
+  const [totalViews, setTotalViews] = useState(0)
+  const [totalLikes, setTotalLikes] = useState(0)
+  
+  // console.log('AuthUser', authUser);
+  console.log('authToken', authToken);
+
   // Dummy Data for Charts
   const [monthlyPodcasts, setMonthlyPodcasts] = useState([
     { month: "Jan", value: 120 },
@@ -28,6 +37,32 @@ const Dashboard = () => {
     { month: "Jun", views: 125000 },
   ]);
 
+  useEffect(()=>{
+    const fetchPodcasts= async ()=>{
+      const res = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/podcast`, {
+        headers: {
+          authorization: `Bearer ${authToken}`
+        }
+      })
+      const data = await res.json()
+      console.log('Data', data);
+      setPodcasts(data)
+
+      const views = data?.podcasts?.reduce((prev_podcast, next_podcast)=>{
+        return prev_podcast+next_podcast.views
+      },0)
+      setTotalViews(views)
+
+      const likes = data?.podcasts?.reduce((prev_podcast, next_podcast)=>{
+        return prev_podcast+next_podcast.likes
+      },0)
+      setTotalLikes(likes)
+
+
+    }
+    fetchPodcasts()
+  }, [])
+
   return (
     <div className="container mx-auto p-6">
       {/* Dashboard Header */}
@@ -35,14 +70,14 @@ const Dashboard = () => {
 
       {/* Metric Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <MetricCard icon={FiMic} title="Total Podcasts Created" value="1,250" trend="Growing" color="bg-blue-100 text-blue-600" />
-        <MetricCard icon={FiUsers} title="Total Users" value="15,320" trend="Active" color="bg-green-100 text-green-600" />
-        <MetricCard icon={FiEye} title="Total Views" value="1.2M" trend="High Engagement" color="bg-purple-100 text-purple-600" />
-        <MetricCard icon={FiHeart} title="Total Likes" value="350K" trend="Popular" color="bg-red-100 text-red-600" />
+        <MetricCard icon={FiMic} title="Total Podcasts Created" value={podcasts?.count?.toString().padStart(2,"0")} trend="Growing" color="bg-blue-100 text-blue-600" />
+        <MetricCard icon={FiUsers} title="Total Users" value="109" trend="Active" color="bg-green-100 text-green-600" />
+        <MetricCard icon={FiEye} title="Total Views" value={totalViews} trend="High Engagement" color="bg-purple-100 text-purple-600" />
+        <MetricCard icon={FiHeart} title="Total Likes" value={totalLikes} trend="Popular" color="bg-red-100 text-red-600" />
         <MetricCard icon={FiClock} title="Avg Podcast Duration" value="18 mins" trend="Standard" color="bg-yellow-100 text-yellow-600" />
-        <MetricCard icon={FiTrendingUp} title="Top Podcast" value="The AI Revolution 🎧" trend="Trending" color="bg-indigo-100 text-indigo-600" />
-        <MetricCard icon={FiUsers} title="Most Used Voice Type" value="Female AI (60%)" trend="Popular Choice" color="bg-pink-100 text-pink-600" />
-        <MetricCard icon={FiDollarSign} title="Total Revenue" value="$14,750" trend="Growing" color="bg-gray-100 text-gray-600" />
+        <MetricCard icon={FiTrendingUp} title="Top Podcast" value={`${podcasts?.podcasts?.[0]?.title} 🎧`} trend="Trending" color="bg-indigo-100 text-indigo-600" />
+        {/* <MetricCard icon={FiUsers} title="Most Used Voice Type" value="Female AI (60%)" trend="Popular Choice" color="bg-pink-100 text-pink-600" />
+        <MetricCard icon={FiDollarSign} title="Total Revenue" value="$14,750" trend="Growing" color="bg-gray-100 text-gray-600" /> */}
       </div>
 
       {/* Charts Section */}
