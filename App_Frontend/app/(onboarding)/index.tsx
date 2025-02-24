@@ -58,7 +58,7 @@ const index = () => {
       }),
     });
     const data = await res.json();
-    console.log(data);
+    console.log("hello",data);
     setAuthuser(data);
     router.push('/home');
   };

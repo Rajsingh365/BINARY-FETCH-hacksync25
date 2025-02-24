@@ -99,6 +99,15 @@ export const BottomDrawer = ({
       }
     }
   };  
+
+  const truncate = () => {
+    if(currentPodcast && currentPodcast?.title.length > 10){
+      return currentPodcast?.title.substring(0, 10) + '...'
+    }
+    return currentPodcast?.title
+  };
+
+  const shorttitle = truncate();
   
 
   return (
@@ -135,7 +144,7 @@ export const BottomDrawer = ({
                 style={[styles.title, isExpanded && styles.titleExpanded]}
                 numberOfLines={1}
               >
-                {currentPodcast?.title}
+                {isExpanded ? currentPodcast?.title : shorttitle}
               </Text>
               <Text
                 style={[styles.creator, isExpanded && styles.creatorExpanded]}
@@ -144,8 +153,9 @@ export const BottomDrawer = ({
                 {currentPodcast?.creator.name}
               </Text>
             </View>
+            
             {isExpanded && (
-              <View style={{ display: "flex", flexDirection: "row", gap: 17, marginTop: 40 }}>
+              <View style={{ display: "flex", flexDirection: "row", gap: 15, marginTop: 40 }}>
                 <TouchableOpacity onPress={toggleLike} style={{ marginTop: 3 }}>
                   <Ionicons 
                   name={isLiked ? "heart" : "heart-outline"}
@@ -257,7 +267,7 @@ const styles = StyleSheet.create({
     marginRight: 30,
   },
   textContainerExpanded: {
-    padding: 16,
+    paddingVertical: 16,
     marginTop: 20,
     // backgroundColor: "red",
   },

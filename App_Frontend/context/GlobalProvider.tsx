@@ -26,7 +26,13 @@ export interface GetPodcastsResponse {
   count: number;
   podcasts: Podcast[];
 }
-
+export interface User {
+  _id: string;
+  name: string;
+  email: string;
+  preferences: string[];
+  token: string;
+}
 
 
 interface GlobalContextType {
@@ -38,8 +44,8 @@ interface GlobalContextType {
 
   AllPodcast: Podcast[];
 
-  authuser: string;
-  setAuthuser: React.Dispatch<React.SetStateAction<string>>;
+  authuser: User | null;
+  setAuthuser: React.Dispatch<React.SetStateAction<User | null>>;
 }
 
 const GlobalContext = createContext<GlobalContextType | null>(null);
@@ -48,28 +54,44 @@ export const GlobalProvider = ({ children }: { children: React.ReactNode }) => {
   const [liked, setLiked] = useState<Podcast[]>([]);
   const [downloaded, setDownloaded] = useState<Podcast[]>([]);
   const [AllPodcast, setAllPodcast] = useState<Podcast[]>([]);
-  const [authuser, setAuthuser] = useState<string>("");
+  const [authuser, setAuthuser] = useState<User | null>(null);
 
   useEffect(() => {
     const fetchPodcasts = async () => {
       try {
-        const response = await fetch(`${process.env.EXPO_PUBLIC_BACKEND_URI}/api/app/podcasts`,{
+        const response = await fetch(`${process.env.EXPO_PUBLIC_BACKEND_URI}/api/app/podcasts`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${authuser.token}`
-          }
+          },
         });
-        const data: GetPodcastsResponse = await response.json();
-        setAllPodcast(data.podcasts);
-        console.log("All Podcasts", data.podcasts);
-      } catch (error : any) {
+  
+        console.log("Response Status:", response.status);
+  
+        // Check if response is OK and has content
+        if (response.ok) {
+          const text = await response.text(); // Read as text first
+          console.log("Raw Response:", text);
+  
+          if (text) {
+            const data: GetPodcastsResponse = JSON.parse(text); // Parse only if not empty
+            console.log("Parsed Data:", data);
+            setAllPodcast(data.podcasts);
+          } else {
+            console.log("Empty response body");
+          }
+        } else {
+          console.error(`Request failed with status: ${response.status}`);
+        }
+      } catch (error: any) {
         console.log("Backend URL:", process.env.EXPO_PUBLIC_BACKEND_URI);
-        console.log("Error in fetching all the podcast in global context",error);
+        console.log("Error in fetching all the podcasts in global context", error);
       }
     };
+  
     fetchPodcasts();
   }, []);
+  
 
   return (
     <GlobalContext.Provider
