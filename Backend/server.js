@@ -40,7 +40,7 @@ app.use(
 app.use("/api/auth", authRoutes);
 app.use("/api/content-generation", contentGenerationRoutes);
 app.use("/api/podcast", protectRoute, podcastRouter);
-app.use("/api/app", protectRoute, appRouter);
+app.use("/api/app", appRouter);
 app.use("/api/listener", listenerRouter);
 
 app.get("/", (req, res) => {

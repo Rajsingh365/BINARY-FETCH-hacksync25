@@ -4,8 +4,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function nobottombar() {
   return (
-      <SafeAreaView>
+    <SafeAreaView style={{flex: 1}}>
         <Slot />
-      </SafeAreaView>
+    </SafeAreaView>
   );
 }
