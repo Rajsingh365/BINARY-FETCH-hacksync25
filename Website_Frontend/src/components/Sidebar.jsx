@@ -8,8 +8,7 @@ import { motion } from "framer-motion";
 import { FaMicrophoneAlt } from "react-icons/fa";
 import { RiFolderHistoryLine } from "react-icons/ri";
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
-
-
+import { useTranslation } from "react-i18next"; // Import useTranslation hook
 
 const sidebarVariants = {
   hidden: { x: -250, opacity: 0 },
@@ -18,6 +17,7 @@ const sidebarVariants = {
 
 export default function Sidebar() {
   const location = useLocation(); // Get current route path
+  const { t } = useTranslation(); // Initialize useTranslation
 
   return (
     <motion.div
@@ -36,7 +36,7 @@ export default function Sidebar() {
             }`}
           >
             <Home className={`${location.pathname === "/" ? "text-orange-500" : ""}`} />
-            <span>Dashboard</span>
+            <span>{t("sidebar.dashboard")}</span>
           </Link>
         </li>
 
@@ -49,7 +49,7 @@ export default function Sidebar() {
             }`}
           >
             <AddCircleOutline className={`${location.pathname === "/generate-content" ? "text-orange-500" : ""}`} />
-            <span>Create Content</span>
+            <span>{t("sidebar.createContent")}</span>
           </Link>
         </li>
 
@@ -62,9 +62,11 @@ export default function Sidebar() {
             }`}
           >
             <Headphones className={`${location.pathname === "/generate-audio" ? "text-orange-500" : ""}`} />
-            <span>Generate Audio</span>
+            <span>{t("sidebar.generateAudio")}</span>
           </Link>
         </li>
+
+        {/* Upload Podcast */}
         <li>
           <Link
             to="/upload-podcast"
@@ -72,11 +74,12 @@ export default function Sidebar() {
               location.pathname === "/upload-podcast" ? "bg-gray-200 text-orange-500" : "hover:bg-gray-100"
             }`}
           >
-
             <FaMicrophoneAlt className={`${location.pathname === "/upload-podcast" ? "text-orange-500" : ""}`} />
-            <span>Upload Podcast</span>
+            <span>{t("sidebar.uploadPodcast")}</span>
           </Link>
         </li>
+
+        {/* Your Podcasts */}
         <li>
           <Link
             to="/your-podcasts"
@@ -84,11 +87,12 @@ export default function Sidebar() {
               location.pathname === "/your-podcasts" ? "bg-gray-200 text-orange-500" : "hover:bg-gray-100"
             }`}
           >
-
             <RiFolderHistoryLine className={`${location.pathname === "/your-podcasts" ? "text-orange-500" : ""}`} />
-            <span>Your Podcast</span>
+            <span>{t("sidebar.yourPodcasts")}</span>
           </Link>
         </li>
+
+        {/* Podcaster Hub */}
         <li>
           <Link
             to="/podcaster-hub"
@@ -97,9 +101,11 @@ export default function Sidebar() {
             }`}
           >
             <ExploreIcon className={`${location.pathname === "/podcaster-hub" ? "text-orange-500" : ""}`} />
-            <span>Podcaster Hub</span>
+            <span>{t("sidebar.podcasterHub")}</span>
           </Link>
         </li>
+
+        {/* Webinars */}
         <li>
           <Link
             to="/webinars"
@@ -108,9 +114,11 @@ export default function Sidebar() {
             }`}
           >
             <CampaignIcon className={`${location.pathname === "/webinars" ? "text-orange-500" : ""}`} />
-            <span>Webinars</span>
+            <span>{t("sidebar.webinars")}</span>
           </Link>
         </li>
+
+        {/* Video Tutorials */}
         <li>
           <Link
             to="/tutorials"
@@ -118,10 +126,12 @@ export default function Sidebar() {
               location.pathname === "/tutorials" ? "bg-gray-200 text-orange-500" : "hover:bg-gray-100"
             }`}
           >
-            <VideoLibraryIcon  className={`${location.pathname === "/tutorials" ? "text-orange-500" : ""}`} />
-            <span>Video Tutorials</span>
+            <VideoLibraryIcon className={`${location.pathname === "/tutorials" ? "text-orange-500" : ""}`} />
+            <span>{t("sidebar.tutorials")}</span>
           </Link>
         </li>
+
+        {/* Community */}
         <li>
           <Link
             to="/community"
@@ -130,9 +140,11 @@ export default function Sidebar() {
             }`}
           >
             <PeopleIcon className={`${location.pathname === "/community" ? "text-orange-500" : ""}`} />
-            <span>Community</span>
+            <span>{t("sidebar.community")}</span>
           </Link>
         </li>
+
+        {/* Profile */}
         <li>
           <Link
             to="/profile"
@@ -141,7 +153,7 @@ export default function Sidebar() {
             }`}
           >
             <AccountCircleIcon className={`${location.pathname === "/profile" ? "text-orange-500" : ""}`} />
-            <span>Profile</span>
+            <span>{t("sidebar.profile")}</span>
           </Link>
         </li>
       </ul>

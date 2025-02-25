@@ -3,13 +3,16 @@ import { Home, Contacts, Login } from "@mui/icons-material";
 import { Menu } from "@mui/icons-material";
 import { useState } from "react";
 import { motion } from "framer-motion";
-import logo from "./../assets/images/logo.png"
+import logo from "./../assets/images/logo.png";
 import { useAuthContext } from "../context/AuthContext";
+import LanguageSwitcher from "./LanguageSwitcher";
+import { useTranslation } from "react-i18next"; // Import useTranslation hook
 
 export function Navbar() {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
-  const {authUser} = useAuthContext()
+  const { authUser } = useAuthContext();
+  const { t } = useTranslation(); // Initialize useTranslation
 
   const isActive = (path) => location.pathname === path;
 
@@ -35,7 +38,7 @@ export function Navbar() {
         {/* Logo and Name - Left aligned */}
         <div className="flex items-center space-x-3 flex-shrink-0">
           <img src={logo} alt="Logo" className="h-10 w-10 rounded-full" />
-          <span className="text-xl font-bold">Vocalect</span>
+          <span className="text-xl font-bold">{t("navbar.brandName")}</span>
         </div>
 
         {/* Desktop Menu - Right aligned */}
@@ -50,7 +53,7 @@ export function Navbar() {
               }`}
             >
               <Home />
-              <span>Home</span>
+              <span>{t("navbar.home")}</span>
             </Link>
           </li>
           <li>
@@ -63,29 +66,32 @@ export function Navbar() {
               }`}
             >
               <Contacts />
-              <span>Contact Us</span>
+              <span>{t("navbar.contactUs")}</span>
             </Link>
           </li>
-          {!authUser && <li>
-            <Link
-              to="/login"
-              className="flex items-center gap-2 p-2 text-red-600 hover:text-red-700 transition-colors"
-            >
-              {/* <Login /> */}
-              <span>Login</span>
-            </Link>
-          </li>}
-          {authUser && <li>
-            <Link
-              to="/login"
-              className="flex items-center gap-2 p-2 text-red-600 hover:text-red-700 transition-colors"
-            >
-              <Login />
-              <span>Log out</span>
-            </Link>
-          </li>}
+          {!authUser && (
+            <li>
+              <Link
+                to="/login"
+                className="flex items-center gap-2 p-2 text-red-600 hover:text-red-700 transition-colors"
+              >
+                <span>{t("navbar.login")}</span>
+              </Link>
+            </li>
+          )}
+          {authUser && (
+            <li>
+              <Link
+                to="/login"
+                className="flex items-center gap-2 p-2 text-red-600 hover:text-red-700 transition-colors"
+              >
+                <Login />
+                <span>{t("navbar.logout")}</span>
+              </Link>
+            </li>
+          )}
         </ul>
-
+        <LanguageSwitcher />
         {/* Mobile Menu Button - Right aligned */}
         <button
           onClick={() => setIsOpen(!isOpen)}
@@ -115,7 +121,7 @@ export function Navbar() {
                 onClick={() => setIsOpen(false)}
               >
                 <Home />
-                <span>Home</span>
+                <span>{t("navbar.home")}</span>
               </Link>
             </li>
             <li>
@@ -129,7 +135,7 @@ export function Navbar() {
                 onClick={() => setIsOpen(false)}
               >
                 <Contacts />
-                <span>Contact Us</span>
+                <span>{t("navbar.contactUs")}</span>
               </Link>
             </li>
             <li>
@@ -139,7 +145,7 @@ export function Navbar() {
                 onClick={() => setIsOpen(false)}
               >
                 <Login />
-                <span>Login</span>
+                <span>{t("navbar.login")}</span>
               </Link>
             </li>
           </ul>
