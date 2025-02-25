@@ -3,12 +3,8 @@ from flask import Flask, request, jsonify, send_file
 from TTS.api import TTS
 from pydub import AudioSegment
 
-
-
 os.system("pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118")
 os.environ["COQUI_TOS_AGREED"] = "1"
-
-port_no = 5000  # Change if needed
 
 app = Flask(__name__)
 
@@ -70,4 +66,5 @@ def generate_podcast():
     return send_file(final_podcast_path, as_attachment=True)
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=port_no)  # Allow external access
+    port = int(os.environ.get("PORT", 10000))  # Get dynamic port for Render
+    app.run(host="0.0.0.0", port=port)  # Allow external access
