@@ -3,6 +3,11 @@ from flask import Flask, request, jsonify, send_file
 from TTS.api import TTS
 from pydub import AudioSegment
 
+
+
+os.system("pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118")
+os.environ["COQUI_TOS_AGREED"] = "1"
+
 port_no = 5000  # Change if needed
 
 app = Flask(__name__)
@@ -13,7 +18,6 @@ os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(OUTPUT_FOLDER, exist_ok=True)
 
 # Automatically accept Coqui license
-os.environ["COQUI_TOS_AGREED"] = "1"
 
 # Load TTS model
 tts_model = TTS("tts_models/multilingual/multi-dataset/xtts_v2")
