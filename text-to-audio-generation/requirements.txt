@@ -184,6 +184,7 @@ gruut_lang_es==2.0.1
 gruut_lang_fr==2.0.2
 gspread==6.1.4
 gspread-dataframe==4.0.0
+gunicorn==23.0.0
 gym==0.25.2
 gym-notices==0.0.8
 gymnasium==1.0.0
