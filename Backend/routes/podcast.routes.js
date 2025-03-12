@@ -10,6 +10,6 @@ const router = express.Router();
 
 router.route("/").get(getAllPodcasts).post(createPodcast);
 router.route("/:id").delete(deletePodcast);
-router.get("/creator/:id", getPodcastsByCreator);
+router.route("/creator/:id").get(getPodcastsByCreator)
 
 export default router;

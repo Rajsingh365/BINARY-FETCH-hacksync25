@@ -1,6 +1,7 @@
 import User from "../models/user.model.js";
 import bcrypt from "bcryptjs";
 import generateTokenAndSetCookie from "../utils/generateToken.util.js";
+import { v2 as cloudinary } from "cloudinary";
 
 export const signUp = async (req, res) => {
   console.log("sighnup controller");
@@ -94,5 +95,72 @@ export const logoutUser = (req, res) => {
   } catch (error) {
     console.log("Error in logout controller", error.message);
     res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
+
+export const getAllUsers = async (req, res) => {
+  try {
+    const { user_id } = req.params;
+
+    const podcasters = await User.find({ _id: { $ne: user_id } }).select("-password");
+
+    res.json({ podcasters });
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error });
+  }
+};
+
+export const getParticularUser = async (req, res) => {
+  try {
+    const { user_id } = req.params;
+    console.log('user', user_id);
+
+    const podcaster = await User.findById(user_id).select("-password");
+
+    if (!podcaster) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    res.json(podcaster);
+  } catch (error) {
+    res.status(500).json({ message: "Error in getParticularUser controller", error });
+  }
+};
+
+
+export const updateProfilePic = async (req, res) => {
+  const { userId } = req.user; // Extract userId from the authenticated user
+
+  console.log('pic', req.files);
+  try {
+    
+    // Upload the image to Cloudinary
+    const result = await cloudinary.uploader.upload(req.files.profilePic.tempFilePath, {
+      use_filename: true,
+      folder: "profile_pictures", // Folder in Cloudinary to store profile pictures
+      resource_type: "image", // Ensure it's treated as an image
+    });
+    console.log('result', result);
+
+    // // Update the user's profile picture in MongoDB
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { profilePic: result.secure_url }, // Set the new profile picture URL
+      { new: true } // Return the updated user document
+    );
+
+    if (!updatedUser) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Return the updated user with the new profile picture URL
+    res.status(200).json({
+      message: "Profile picture updated successfully",
+      user: updatedUser,
+    });
+  } catch (err) {
+    console.error("Error updating profile picture:", err);
+    res.status(500).json({ error: "Failed to update profile picture" });
   }
 };

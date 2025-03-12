@@ -7,6 +7,8 @@ function useLogin() {
   const { setAuthUser, setAuthToken } = useAuthContext();
 
   const login = async (email, password) => {
+    console.log("email", email);
+    console.log("password", password); 
     const success = handleInputErrors(email, password);
     if (!success) return false;
 
@@ -25,6 +27,7 @@ function useLogin() {
       }
 
       const { token, ...userData } = data;
+      console.log('userData', userData);
       localStorage.setItem("loggedin_user", JSON.stringify(userData));
       localStorage.setItem("Hacks25-jwt", JSON.stringify(token));
       setAuthUser(userData);

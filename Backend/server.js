@@ -12,6 +12,7 @@ import listenerRouter from "./routes/listener.routes.js";
 import contentGenerationRoutes from "./routes/contentgeneration.route.js";
 import { protectRoute } from "./middleware/authentication.js";
 import { v2 as cloudinary } from "cloudinary";
+import { startAgenda } from "./agenda.js";
 
 cloudinary.config({
   cloud_name: process.env.CLOUD_NAME,
@@ -23,10 +24,13 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 const __dirname = path.resolve();
 
+
 app.use(express.json());
 app.use(express.static("output"));
 app.use(express.urlencoded({ extended: false }));
 app.use(cors());
+
+
 app.use(
   fileUpload({
     useTempFiles: true,
@@ -36,14 +40,15 @@ app.use(
 app.use("/api/auth", authRoutes);
 app.use("/api/content-generation", contentGenerationRoutes);
 app.use("/api/podcast", protectRoute, podcastRouter);
-app.use("/api/app", protectRoute, appRouter);
+app.use("/api/app", appRouter);
 app.use("/api/listener", listenerRouter);
 
 app.get("/", (req, res) => {
   res.json({ message: "Hello world" });
 });
 
-app.listen(PORT, () => {
+app.listen(PORT, async() => {
   connectDb();
   console.log(`Server is running on port ${PORT}`);
+  await startAgenda();
 });

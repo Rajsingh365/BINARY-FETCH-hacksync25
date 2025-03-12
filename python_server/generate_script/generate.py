@@ -19,6 +19,7 @@ class GenerateScript :
     prompt_script = PromptTemplate.from_template(
     """
     ### PODCAST SCRIPT CREATION
+    ### PODCAST SCRIPT CREATION
     Title of the episode : {title}
     ### BRIEF
     The podcast must revolve around : {summary}
@@ -26,14 +27,19 @@ class GenerateScript :
     Instructions you must follow : {special_instructions}
     ### IMPORTANT GUIDELINES
     You are tasked with creating a podcast script based on the following instructions. 
+    You are tasked with creating a podcast script based on the following instructions. 
     Use the provided summary to craft a script that can be read aloud for a podcast episode. 
     Make sure to create a compelling narrative with engaging storytelling and clear transitions.
     Keep the tone conversational and approachable. 
     Ensure the script includes real-world examples or scenarios to make it relatable and insightful.
     Format the script in a way that would be easy for a speaker to follow during the podcast.
     Make a proper long form podcast with multiple different sub conversations.
+    Make a proper long form podcast with multiple different sub conversations.
 
     ### OUTPUT FORMAT (PODCAST SCRIPT):
+    The output should be valid json having two fields : content - an array that will contain objects that
+    will have 2 fields, the speaker and the content they say, and tags - an array of tags that will be used later 
+    for the recommendation algorithm internally.
     The output should be valid json having two fields : content - an array that will contain objects that
     will have 2 fields, the speaker and the content they say, and tags - an array of tags that will be used later 
     for the recommendation algorithm internally.
@@ -61,7 +67,7 @@ class GenerateScript :
     res = chain_script.invoke(input=input_data)
 
     print(res.content, type(res.content))
-
+    
     try:
         json_parser = JsonOutputParser()
         res = json_parser.parse(res.content)

@@ -1,29 +1,42 @@
 import { FontAwesome, Ionicons } from "@expo/vector-icons";
-import MaterialIcons from '@expo/vector-icons/MaterialIcons'
-import { Tabs,router } from "expo-router";
+import MaterialIcons from '@expo/vector-icons/MaterialIcons';
+import { Tabs, router } from "expo-router";
 import { TouchableOpacity, View } from "react-native";
 
 export default function TabLayout() {
   return (
+    <Tabs
+      screenOptions={{
+        tabBarActiveTintColor: "#7743DB", // Active tab icon and text color
+        tabBarInactiveTintColor: "#C3ACD0", // Inactive tab icon and text color
+        tabBarStyle: {
+          backgroundColor: "#FFFBF5", // Tab bar background color
+          borderTopWidth: 0, // Remove the top border
+        },
+        headerShown: true,
+        headerStyle: {
+          backgroundColor: "#FFFBF5", // Header background color
+        },
+        headerTintColor: "#7743DB", // Header text color
+        headerTitleStyle: {
+          fontWeight: "bold",
+          fontSize: 20,
+        },
+        headerRight: () => (
+          <View style={{ flexDirection: "row", gap: 20, marginRight: 16 }}>
+            <TouchableOpacity onPress={() => router.push("/search")}>
+              <Ionicons name="search-outline" size={24} color="#7743DB" />
+            </TouchableOpacity>
 
-    <Tabs screenOptions={{ 
-      tabBarActiveTintColor: "blue", 
-      headerShown: true,
-      headerRight: () => (
-        <View style={{ flexDirection: "row", gap: 20, marginRight: 16 }}>
-          <TouchableOpacity onPress={() => router.push("/search")}>
-            <Ionicons name="search-outline" size={24} color="black" />
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={() => router.push("/settings")}>
-            <Ionicons name="settings-outline" size={24} color="black" />
-          </TouchableOpacity>
-        </View>
-      ),
-    }}>
-
+            <TouchableOpacity onPress={() => router.push("/settings")}>
+              <Ionicons name="settings-outline" size={24} color="#7743DB" />
+            </TouchableOpacity>
+          </View>
+        ),
+      }}
+    >
       <Tabs.Screen
-        name="index"
+        name="home"
         options={{
           title: "Home",
           tabBarIcon: ({ color }) => (
@@ -41,16 +54,6 @@ export default function TabLayout() {
           ),
         }}
       />
-
-      {/* <Tabs.Screen
-        name="account"
-        options={{
-          title: "Account",
-          tabBarIcon: ({ color }) => (
-            <FontAwesome size={28} name="cog" color={color} />
-          ),
-        }}
-      /> */}
     </Tabs>
   );
 }

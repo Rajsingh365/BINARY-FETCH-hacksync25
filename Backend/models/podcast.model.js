@@ -30,7 +30,7 @@ const podcastSchema = new mongoose.Schema(
     status: {
       type: String,
       enum: ["scheduled", "uploaded"],
-      default: ["uploaded"],
+      default: "scheduled",
     },
     scheduleTime: {
       type: Date,
