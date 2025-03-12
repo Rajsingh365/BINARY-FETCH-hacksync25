@@ -10,7 +10,7 @@ load_dotenv();
 class GenerateScript : 
   def __init__(self) : 
     self.llm = ChatGroq(
-      model="mixtral-8x7b-32768",
+      model="llama-3.3-70b-versatile",
       temperature=0,
       groq_api_key=os.getenv("GROQ_API_KEY")
     )
@@ -41,8 +41,8 @@ class GenerateScript :
     ### FINAL OUTPUT (VALID JSON FORMATTED PLAIN TEXT AND NOT JSON):
     {{
       "content": [
-        {{ speaker : speaker1(this exact name), text : dialogue by speaker 1 }},
-        {{ speaker : speaker2(this exact name), text : dialogue by speaker 2 }},
+        {{ speaker : Speaker1(this exact name), text : dialogue by speaker 1 }},
+        {{ speaker : Speaker2(this exact name), text : dialogue by speaker 2 }},
         and so on...
       ],
       "tags": "appropriate tags"
